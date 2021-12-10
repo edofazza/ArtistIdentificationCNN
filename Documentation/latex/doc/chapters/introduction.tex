@@ -21,9 +21,105 @@ The first time the problem of artist identification was really tackled was with 
 Later on, the problem of identifying artists was retackled by the \textit{Rijksmuseum Challenge}\footnote{T. Mensink and J. van Gemert. The rijksmuseum challenge: Museum-centered visual recognition. 2014}. The objective of the challenge was to predict the artist, type, material and creation year of the 112,039 photographic reproductions of the artworks exhibited in the Rijksmuseum in Amsterdam (the Netherlands). The year later, Saleh and Elgammal's paper\footnote{B. Saleh and A. M. Elgammal. Large-scale classification of fine-art paintings: Learning the right metric on the right
 feature. CoRR, abs/1505.00855, 2015} was the first attempt to identify artists with a large and varied dataset, but still using generic features.
 
-More recent attempts are related to the \textit{Painter by Numbers}, a \textbf{Playground Prediction Competition} by \textit{Kaggle}. This competition used a pairwise comparison scheme: participants had to create an algorithm which needs to examine two images and predict whether the two images are by the same artist or not. Thus, it is not our same objective, however it can be consider the first application of Deep Learning to the problem. The real deal was taken by Nitin Viswanathan\footnote{Nitin Viswanathan, Artist Identification with Convolutional Neural Networks} in 2017.
+More recent attempts are related to the \textit{Painter by Numbers}, a \textbf{Playground Prediction Competition} by \textit{Kaggle}\footnote{https://www.kaggle.com/c/painter-by-numbers/data}. This competition used a pairwise comparison scheme: participants had to create an algorithm which needs to examine two images and predict whether the two images are by the same artist or not. Thus, it is not our same objective, however it can be consider the first application of Deep Learning to the problem. The real deal was taken by Nitin Viswanathan\footnote{Nitin Viswanathan, Artist Identification with Convolutional Neural Networks} in 2017.
 Viswanathan, using the same dataset of the mentioned \textit{Kaggle Challenge}, proposed the use of ResNet with transfer learning (he first held the weights of the base ResNet constant and updated only the fully-connected layer for a few epochs). This trained network reached a train accuracy of 0.973 and a test accuracy of 0.898.
 
 
 
 \subsection{Dataset}
+Unfortunately, the dataset provided by the \textit{Kaggle Challange} is too huge to be used in Colab, in fact it is about 60GB unbearable on the free version of Colab, which provides only about 30GB of disk. Stated that, we decided to use a different dataset\footnote{https://www.kaggle.com/ikarus777/best-artworks-of-all-time} with only 2GB of data and about 8k unique images.
+
+\noindent The data downloaded from Kaggle has the following directories and csv file:
+\dirtree{%
+.1 /.
+.2 images.
+.3 images.
+.4 Albrecht\_Durer.
+.4 Alfred\_Sisley.
+.4 Amedeo\_Modigliani.
+.4 Andrei\_Rublev.
+.4 Andy\_Warhol.
+.4 Camille\_Pissarro.
+.4 Caravaggio.
+.4 Claude\_Monet.
+.4 Diego\_Rivera.
+.4 Diego\_Velazquez.
+.4 Edgar\_Degas.
+.4 Edouard\_Manet.
+.4 Edvard\_Munch.
+.4 \textit{an many others (total of 50 different artists)}.
+.2 resized.
+.2 {artists.csv}.
+}
+
+\noindent The \textit{resized} directory and the \textit{artists.csv} are not useful for our studies, hence we deleted them to save space on the disk. Then, we modified the structure of the \textit{images/images} directory in order to create two directories, \textbf{train} and \textbf{test}, containing 85\% and 15\% of the images from each different artist's directory respectively. The newly created directories have the same structured of \textit{images/images}. This was done in \textit{python} in this way:
+
+\begin{python}
+import os
+import numpy as np
+import shutil
+
+rootdir= '/content/images/images' #path of the original folder
+classes = os.listdir(rootdir)
+
+for i in classes:
+  if not os.path.exists(rootdir + '/train/' + i):
+    os.makedirs(rootdir + '/train/' + i)
+  if not os.path.exists(rootdir + '/test/' + i):  
+    os.makedirs(rootdir + '/test/' + i)
+
+  source = os.path.join(rootdir, i)
+  allFileNames = os.listdir(source)
+
+  np.random.shuffle(allFileNames)
+
+  test_ratio = 0.15
+  train_FileNames, test_FileNames = np.split(np.array(allFileNames),
+                                                        [int(len(allFileNames)* (1 - test_ratio))])
+
+  train_FileNames = [source+'/'+ name for name in train_FileNames.tolist()]
+  test_FileNames = [source+'/' + name for name in test_FileNames.tolist()]
+
+  for name in train_FileNames:
+    shutil.copy(name, rootdir +'/train/' + i)
+
+  for name in test_FileNames:
+    shutil.copy(name, rootdir +'/test/' + i
+\end{python}
+
+After that we created the train/validation/test-set using the \textit{image\_dataset\_from\_directory} function provided by \textbf{Keras} in the following way:
+
+\begin{python}
+import tensorflow as tf
+
+training_images = tf.keras.preprocessing.image_dataset_from_directory(
+    TRAIN_DIR, labels='inferred', label_mode='categorical',
+    class_names=None, color_mode='rgb', batch_size=BATCH_SIZE, 
+    image_size=(IMAGE_HEIGHT,  IMAGE_WIDTH), shuffle=True, seed=RANDOM_SEED, 
+    validation_split=VALIDATION_SPLIT, subset='training',
+    interpolation='bilinear', follow_links=False
+)
+
+val_images = tf.keras.preprocessing.image_dataset_from_directory(
+    TRAIN_DIR, labels='inferred', label_mode='categorical',
+    class_names=None, color_mode='rgb', batch_size=BATCH_SIZE,
+    image_size=(IMAGE_HEIGHT, IMAGE_WIDTH), shuffle=True, seed=RANDOM_SEED,
+    validation_split=VALIDATION_SPLIT, subset='validation',
+    interpolation='bilinear', follow_links=False
+)
+
+test_images = tf.keras.preprocessing.image_dataset_from_directory(
+    TEST_DIR, labels='inferred', label_mode='categorical',
+    class_names=None, color_mode='rgb', batch_size=BATCH_SIZE, 
+    image_size=(IMAGE_HEIGHT, IMAGE_WIDTH), shuffle=True, seed=RANDOM_SEED,
+    interpolation='bilinear', follow_links=False
+)
+\end{python}
+
+\noindent Obtaining:
+ \begin{itemize}
+	\item 6081 files for training (belonging to 50 classes).
+	\item 1073 files for validation (belonging to 50 classes).
+	\item 1292 files for testing (belonging to 50 classes).
+\end{itemize}
+
