@@ -56,7 +56,7 @@ Unfortunately, the dataset provided by the \textit{Kaggle Challange} is too huge
 \noindent The \textit{resized} directory is not useful for our studies, hence we deleted it to save space on the disk. On the other hand, we first use the \textit{csv} file to select only the artists with at least 200 pieces, this operation was done to reduce the number of classes to a number per which the ratio between the number of artists and images was reasonable for learning. Even done that, the dataset was still unbalanced, e.g. Van Gogh's paintings are 877 against the 239 of Chagall's, thus we consider to compute \textbf{class weights} in order to use them in the \textit{fit function}:
 
 $
-	\text{class\_weights} = \frac{\text{Total number of paintings considered}}{\text{Number of artists considered}}\cdot \text{Number of paintings per author}
+	\text{class\_weights} = \frac{\text{Total number of paintings considered}}{\text{Number of artists considered}\cdot \text{Number of paintings per author}}
 $
 
 \noindent Then, we modified the structure of the \textit{images/images} directory in order to create two directories, \textbf{train} and \textbf{test}, containing 90\% and 10\% of the images from each different artist's directory respectively (considering only the artists with at least 200 paintings). The newly created directories have the same structured of \textit{images/images}. This was done in \textit{python} in this way:
