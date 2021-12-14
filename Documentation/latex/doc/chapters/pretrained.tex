@@ -37,7 +37,7 @@ The original VGG16 comes with a couple of 4096 FC layers followed by 1000 softma
 \hline
 \textbf{Epoch stopped} & \textbf{Validation Accuracy} & \textbf{Testing Accuracy} & \textbf{Validation Loss} & \textbf{Testing Loss} \\
 \hline
-16 & 0.7927 &0.7471 & 2.5532 & 3.6978\\
+14 & 0.7865 & 0.6391 & 2.5558 & 5.7\\
 \hline
 \end{tabular}
 
@@ -46,25 +46,54 @@ The original VGG16 comes with a couple of 4096 FC layers followed by 1000 softma
  \noindent The network begin to overfit very fast, hence some regularization methods are needed.
 
 
+\begin{figure}[H]
+	\centering
+	\includegraphics[height=0.45\textwidth]{img/vgg16fe1acc.png}
+	\caption{Our Feature Extraction Network Accuracy}
+	\label{fig:vgg16fe1acc}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[height=0.45\textwidth]{img/vgg16fe1loss.png}
+	\caption{Our Feature Extraction Network Loss}
+	\label{fig:vgg16fe1loss}
+\end{figure}
 
 \subsubsection{Test 2: Adding dropout to Test 1}
-We have two possible positions to use the dropout layer in our network and they are after each 256-dense layer, thus we change our previous network in the following way:
+We have two possible positions to use the dropout layer in our network and they are after each 256-dense layer, thus we change our previous network in the following way\footnote{We didn't use a dropoout layer between the two 256-dense layers, since this type of architecture led to worst performance}:
 \begin{figure}[H]
 	\centering
 	\includegraphics[height=0.45\textwidth]{img/vgg16fe2.png}
 	\caption{Our Feature Extraction Network + Dropout}
 	\label{fig:vgg16fe2}
 \end{figure}
+  
 
-\subsubsection{Test 3: Completely New Output Layers Architecture (Feature Extraction)}
+\noindent The result obtained, using RMSprop as optimizer, are:
 
-\subsubsection{Test 4: Test 4 with Data Augmentation}
+\medskip
 
-\subsubsection{Test 5: Test 4 with Data Augmentation + Regularization}
+\begin{tabular}{ |p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|  }
+\hline
+\multicolumn{5}{|c|}{Feature Extraction} \\
+\hline
+\textbf{Epoch stopped} & \textbf{Validation Accuracy} & \textbf{Testing Accuracy} & \textbf{Validation Loss} & \textbf{Testing Loss} \\
+\hline
+16 & 0.7927 &0.7471 & 2.5532 & 3.6978\\
+\hline
+\end{tabular}
 
-\subsubsection{Test 6: Fine Tuning with One Layer}
+\medskip
 
-\subsubsection{Test 7: Fine Tuning with Two Layers}
+
+
+
+
+\subsubsection{Test 3: Fine Tuning  One Block}
+Since we have a few thousands of data and a dataset very different from ImageNet Justin Johnson in his lectures suggest to finetune a large number of layers\footnote{https://web.eecs.umich.edu/~justincj/teaching/eecs498/FA2020/}. Hence, we decided to finetune, in this paragraph, one entire block, made of the latest 3 CNNs.
+
+\subsubsection{Test 4: Fine Tuning  Two Blocks}
 
 \subsubsection{Test 8: Genetic Algorithm for Hyper-parameters and Architecture Optimization}
 
