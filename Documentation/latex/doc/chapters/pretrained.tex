@@ -1,27 +1,60 @@
 \section{Pre-Trained Models}
-This section describes the results obtained using different pre-trained architecture and strategies. The pre-trained networks here tested are:
+This section describes the results obtained using different pre-trained architecture and strategies\footnote{The data augmentation strategy is always used since we have very little data}. The pre-trained networks here tested are:
 \begin{itemize}
 \item VGG16
 \item ResNet50V2
 \item ResNet101V2
 \item InceptionV3
 \end{itemize}
-
- 
  
 \subsection{VGG16}
-
-\subsubsection{Test 1: Classical VGG16 (Feature Extraction)}
 VGG16\ref{fig:vgg16} is a convolutional neural network model proposed by Simonyan et al., with several 3x3 convolutional layers in cascade occasionally interleaved with 2x2 max-pooling layers forming the so called \textit{blocks}. Developed for the ILSVRC2014 challenge, it was able to achieve a top-5 accuracy of 92.7 on ImageNet.
 \begin{figure}[H]
 	\centering
-	\includegraphics[height=0.3\textwidth]{img/vgg16.png}
+	\includegraphics[height=0.7\textwidth]{img/vgg16.png}
 	\caption{VGG16 Architecture}
 	\label{fig:vgg16}
 \end{figure}
 
-\subsubsection{Test 2: Test 1 with Data Augmentation}
+\subsubsection{Test 1: Classical VGG16 (Feature Extraction)}
+The original VGG16 comes with a couple of 4096 FC layers followed by 1000 softmax neurons, which is alright for ImageNet but definitely oversized for our purpose. Hence, the convolutional base is left as it is, and the fully-connected block is replaced by the a shrunk version with only 256 neurons per layer, followed by our prediction layer made of 11 neurons\ref{fig:vgg16fe1}.
 
+\begin{figure}[H]
+	\centering
+	\includegraphics[height=0.5\textwidth]{img/vgg16fe1.png}
+	\caption{Our Feature Extraction Network}
+	\label{fig:vgg16fe1}
+\end{figure}
+
+
+\noindent The result obtained, using RMSprop as optimizer, are:
+
+\medskip
+
+\begin{tabular}{ |p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|  }
+\hline
+\multicolumn{5}{|c|}{Feature Extraction} \\
+\hline
+\textbf{Epoch stopped} & \textbf{Validation Accuracy} & \textbf{Testing Accuracy} & \textbf{Validation Loss} & \textbf{Testing Loss} \\
+\hline
+16 & 0.7927 &0.7471 & 2.5532 & 3.6978\\
+\hline
+\end{tabular}
+
+\medskip
+
+ \noindent The network begin to overfit very fast, hence some regularization methods are needed.
+
+
+
+\subsubsection{Test 2: Adding dropout to Test 1}
+We have two possible positions to use the dropout layer in our network and they are after each 256-dense layer, thus we change our previous network in the following way:
+\begin{figure}[H]
+	\centering
+	\includegraphics[height=0.45\textwidth]{img/vgg16fe2.png}
+	\caption{Our Feature Extraction Network + Dropout}
+	\label{fig:vgg16fe2}
+\end{figure}
 
 \subsubsection{Test 3: Completely New Output Layers Architecture (Feature Extraction)}
 
