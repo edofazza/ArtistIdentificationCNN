@@ -61,7 +61,7 @@ The original VGG16 comes with a couple of 4096 FC layers followed by 1000 softma
 \end{figure}
 
 \subsubsection{Test 2: Adding dropout to Test 1}
-We have two possible positions to use the dropout layer in our network and they are after each 256-dense layer, thus we change our previous network in the following way\footnote{We didn't use a dropoout layer between the two 256-dense layers, since this type of architecture led to worst performance}:
+We have two possible positions to use the dropout layer in our network and they are after each 256-dense layer, thus we change our previous network in the following way\footnote{We didn't use a dropout layer between the two 256-dense layers, since this type of architecture led to worst performance}:
 \begin{figure}[H]
 	\centering
 	\includegraphics[height=0.45\textwidth]{img/vgg16fe2.png}
@@ -80,13 +80,15 @@ We have two possible positions to use the dropout layer in our network and they 
 \hline
 \textbf{Epoch stopped} & \textbf{Validation Accuracy} & \textbf{Testing Accuracy} & \textbf{Validation Loss} & \textbf{Testing Loss} \\
 \hline
-16 & 0.7927 &0.7471 & 2.5532 & 3.6978\\
+?? & ?? & ?? & 2.5532 & 3.6978\\
 \hline
 \end{tabular}
 
 \medskip
 
+IMAGES
 
+\noindent As expected, dropout mitigated the magnitude of overfitting, now the networks need more time to reach high values of training accuracy and the validation improved to ???.
 
 
 
