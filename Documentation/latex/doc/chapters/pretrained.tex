@@ -12,7 +12,7 @@ This section describes the results obtained using different pre-trained architec
 VGG16\ref{fig:vgg16} is a convolutional neural network model proposed by Simonyan et al., with several 3x3 convolutional layers in cascade occasionally interleaved with 2x2 max-pooling layers forming the so called \textit{blocks}. Developed for the ILSVRC2014 challenge, it was able to achieve a top-5 accuracy of 92.7 on ImageNet.
 \begin{figure}[H]
 	\centering
-	\includegraphics[height=0.7\textwidth]{img/vgg16.png}
+	\includegraphics[height=0.7\textwidth]{img/vgg16/vgg16.png}
 	\caption{VGG16 Architecture}
 	\label{fig:vgg16}
 \end{figure}
@@ -22,7 +22,7 @@ The original VGG16 comes with a couple of 4096 FC layers followed by 1000 softma
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[height=0.5\textwidth]{img/vgg16fe1.png}
+	\includegraphics[height=0.5\textwidth]{img/vgg16/vgg16fe1.png}
 	\caption{Our Feature Extraction Network}
 	\label{fig:vgg16fe1}
 \end{figure}
@@ -49,14 +49,14 @@ The original VGG16 comes with a couple of 4096 FC layers followed by 1000 softma
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[height=0.45\textwidth]{img/vgg16fe1acc.png}
+	\includegraphics[height=0.45\textwidth]{img/vgg16/vgg16fe1acc.png}
 	\caption{Our Feature Extraction Network Accuracy}
 	\label{fig:vgg16fe1acc}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[height=0.45\textwidth]{img/vgg16fe1loss.png}
+	\includegraphics[height=0.45\textwidth]{img/vgg16/vgg16fe1loss.png}
 	\caption{Our Feature Extraction Network Loss}
 	\label{fig:vgg16fe1loss}
 \end{figure}
@@ -65,7 +65,7 @@ The original VGG16 comes with a couple of 4096 FC layers followed by 1000 softma
 We have two possible positions to use the dropout layer in our network and they are after each 256-dense layer, thus we change our previous network in the following way\footnote{We didn't use a dropout layer between the two 256-dense layers, since this type of architecture led to worst performance}:
 \begin{figure}[H]
 	\centering
-	\includegraphics[height=0.45\textwidth]{img/vgg16fe2.png}
+	\includegraphics[height=0.45\textwidth]{img/vgg16/vgg16fe2.png}
 	\caption{Our Feature Extraction Network + Dropout}
 	\label{fig:vgg16fe2}
 \end{figure}
@@ -89,14 +89,14 @@ We have two possible positions to use the dropout layer in our network and they 
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[height=0.45\textwidth]{img/vgg16fe2acc.png}
+	\includegraphics[height=0.45\textwidth]{img/vgg16/vgg16fe2acc.png}
 	\caption{Our Feature Extraction Network Accuracy}
 	\label{fig:vgg16fe2acc}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[height=0.45\textwidth]{img/vgg16fe2loss.png}
+	\includegraphics[height=0.45\textwidth]{img/vgg16/vgg16fe2loss.png}
 	\caption{Our Feature Extraction Network Loss}
 	\label{fig:vgg16fe2oss}
 \end{figure}
@@ -125,14 +125,14 @@ Using the model defined in test 1, the 3rd Conv2D layer in the 5th block is un-f
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[height=0.45\textwidth]{img/vgg16ft1acc.png}
+	\includegraphics[height=0.45\textwidth]{img/vgg16/vgg16ft1acc.png}
 	\caption{Our Feature Extraction Network Accuracy}
 	\label{fig:vgg16ft1acc}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[height=0.45\textwidth]{img/vgg16ft1loss.png}
+	\includegraphics[height=0.45\textwidth]{img/vgg16/vgg16ft1loss.png}
 	\caption{Our Feature Extraction Network Loss}
 	\label{fig:vgg16ft1loss}
 \end{figure}
@@ -166,14 +166,14 @@ TODO:Using the model defined in test 3, the 3rd Conv2D layer in the 5th block is
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[height=0.45\textwidth]{img/vgg16ft1dropacc.png}
+	\includegraphics[height=0.45\textwidth]{img/vgg16/vgg16ft1dropacc.png}
 	\caption{Our Feature Extraction Network Accuracy}
 	\label{fig:vgg16ft1dropacc}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[height=0.45\textwidth]{img/vgg16ft1droploss.png}
+	\includegraphics[height=0.45\textwidth]{img/vgg16/vgg16ft1droploss.png}
 	\caption{Our Feature Extraction Network Loss}
 	\label{fig:vgg16ft1droploss}
 \end{figure}
@@ -201,14 +201,14 @@ Using 4 but with 2 CNN un-frozen
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[height=0.45\textwidth]{img/vgg16ft2dropacc.png}
+	\includegraphics[height=0.45\textwidth]{img/vgg16/vgg16ft2dropacc.png}
 	\caption{Our Feature Extraction Network Accuracy}
 	\label{fig:vgg16ft2dropacc}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[height=0.45\textwidth]{img/vgg16ft2droploss.png}
+	\includegraphics[height=0.45\textwidth]{img/vgg16/vgg16ft2droploss.png}
 	\caption{Our Feature Extraction Network Loss}
 	\label{fig:vgg16ft2droploss}
 \end{figure}
@@ -241,14 +241,14 @@ Using 4 but with 1 CNN un-frozen + L1\_L2
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[height=0.45\textwidth]{img/vgg16ft1dropregacc.png}
+	\includegraphics[height=0.45\textwidth]{img/vgg16/vgg16ft1dropregacc.png}
 	\caption{Our Feature Extraction Network Accuracy}
 	\label{fig:vgg16ft1dropregacc}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[height=0.45\textwidth]{img/vgg16ft1dropregloss.png}
+	\includegraphics[height=0.45\textwidth]{img/vgg16/vgg16ft1dropregloss.png}
 	\caption{Our Feature Extraction Network Loss}
 	\label{fig:vgg16ft1dropregloss}
 \end{figure}
@@ -280,14 +280,14 @@ Using 5 but with 2 CNN un-frozen + L1\_L2
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[height=0.45\textwidth]{img/vgg16ft2dropregacc.png}
+	\includegraphics[height=0.45\textwidth]{img/vgg16/vgg16ft2dropregacc.png}
 	\caption{Our Feature Extraction Network Accuracy}
 	\label{fig:vgg16ft2dropregacc}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[height=0.45\textwidth]{img/vgg16ft2dropregloss.png}
+	\includegraphics[height=0.45\textwidth]{img/vgg16/vgg16ft2dropregloss.png}
 	\caption{Our Feature Extraction Network Loss}
 	\label{fig:vgg16ft2dropregloss}
 \end{figure}
@@ -308,12 +308,85 @@ Using 5 but with 2 CNN un-frozen + L1\_L2
 
 \subsection{ResNet50V2}
 
+
 \subsubsection{Test 1: Classical ResNet50V2 (Feature Extraction)}
-On a small dataset, overfitting will be the main issue. Data augmentation is a powerful way to fight overfitting when you’re working with image data.
 
-\subsubsection{Test 2: Completely New Output Layers Architecture}
+\begin{tabular}{ |p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|  }
+\hline
+\multicolumn{5}{|c|}{Feature Extraction} \\
+\hline
+\textbf{Epoch stopped} & \textbf{Validation Accuracy} & \textbf{Testing Accuracy} & \textbf{Validation Loss} & \textbf{Testing Loss} \\
+\hline
+39 & 0.4430 & 0.3241 & 5.3733 & 6.8513\\
+\hline
+\end{tabular}
 
-\subsubsection{Test 3: 1 and 2 with Data Augmentation}
+\begin{figure}[H]
+	\centering
+	\includegraphics[height=0.45\textwidth]{img/resnet50v2/resnet50acc.png}
+	\caption{Our Feature Extraction Network Accuracy}
+	\label{fig:resnet50acc}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[height=0.45\textwidth]{img/resnet50v2/resnet50loss.png}
+	\caption{Our Feature Extraction Network Loss}
+	\label{fig:resnet50loss}
+\end{figure}
+
+
+\subsubsection{Test 2: Finetune 1 block}
+
+\begin{tabular}{ |p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|  }
+\hline
+\multicolumn{5}{|c|}{Feature Extraction} \\
+\hline
+\textbf{Epoch stopped} & \textbf{Validation Accuracy} & \textbf{Testing Accuracy} & \textbf{Validation Loss} & \textbf{Testing Loss} \\
+\hline
+18 & 0.6399 & 0.5793 & 1.2453 & 1.7916\\
+\hline
+\end{tabular}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[height=0.45\textwidth]{img/resnet50v2/resnet50finetuned1acc.png}
+	\caption{Our Feature Extraction Network Accuracy}
+	\label{fig:resnet50finetuned1acc}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[height=0.45\textwidth]{img/resnet50v2/resnet50finetuned1loss.png}
+	\caption{Our Feature Extraction Network Loss}
+	\label{fig:resnet50finetuned1loss}
+\end{figure}
+
+\subsubsection{Test 3: Finetuned 2 blocks}
+
+\begin{tabular}{ |p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|  }
+\hline
+\multicolumn{5}{|c|}{Feature Extraction} \\
+\hline
+\textbf{Epoch stopped} & \textbf{Validation Accuracy} & \textbf{Testing Accuracy} & \textbf{Validation Loss} & \textbf{Testing Loss} \\
+\hline
+20 & 0.6477 & 0.6092 & 1.5918 & 1.7734\\
+\hline
+\end{tabular}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[height=0.45\textwidth]{img/resnet50v2/resnet50finetuned2acc.png}
+	\caption{Our Feature Extraction Network Accuracy}
+	\label{fig:resnet50finetuned2acc}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[height=0.45\textwidth]{img/resnet50v2/resnet50finetuned2loss.png}
+	\caption{Our Feature Extraction Network Loss}
+	\label{fig:resnet50finetuned2loss}
+\end{figure}
 
 \subsubsection{Test 4: Fine Tuning with One Layer}
 
