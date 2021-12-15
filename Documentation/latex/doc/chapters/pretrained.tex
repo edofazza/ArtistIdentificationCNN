@@ -37,7 +37,7 @@ The original VGG16 comes with a couple of 4096 FC layers followed by 1000 softma
 \hline
 \textbf{Epoch stopped} & \textbf{Validation Accuracy} & \textbf{Testing Accuracy} & \textbf{Validation Loss} & \textbf{Testing Loss} \\
 \hline
-14 & 0.7865 & 0.6391 & 2.5558 & 5.7\\
+12 & 0.7409 & 0.7057 & 5.1959 & 5.7\\
 \hline
 \end{tabular}
 
@@ -80,22 +80,224 @@ We have two possible positions to use the dropout layer in our network and they 
 \hline
 \textbf{Epoch stopped} & \textbf{Validation Accuracy} & \textbf{Testing Accuracy} & \textbf{Validation Loss} & \textbf{Testing Loss} \\
 \hline
-?? & ?? & ?? & 2.5532 & 3.6978\\
+25 & 0.7306 & 0.7195 & 3.0616 & 3.0035\\
 \hline
 \end{tabular}
 
 \medskip
 
-IMAGES
+\begin{figure}[H]
+	\centering
+	\includegraphics[height=0.45\textwidth]{img/vgg16fe2acc.png}
+	\caption{Our Feature Extraction Network Accuracy}
+	\label{fig:vgg16fe2acc}
+\end{figure}
 
-\noindent As expected, dropout mitigated the magnitude of overfitting, now the networks need more time to reach high values of training accuracy and the validation improved to ???.
+\begin{figure}[H]
+	\centering
+	\includegraphics[height=0.45\textwidth]{img/vgg16fe2loss.png}
+	\caption{Our Feature Extraction Network Loss}
+	\label{fig:vgg16fe2oss}
+\end{figure}
+
+\noindent TODO: As expected, dropout mitigated the magnitude of overfitting, now the networks need more time to reach high values of training accuracy and the validation improved to ???.
 
 
 
-\subsubsection{Test 3: Fine Tuning  One Block}
-Since we have a few thousands of data and a dataset very different from ImageNet Justin Johnson in his lectures suggest to finetune a large number of layers\footnote{https://web.eecs.umich.edu/~justincj/teaching/eecs498/FA2020/}. Hence, we decided to finetune, in this paragraph, one entire block, made of the latest 3 CNNs.
+\subsubsection{Test 3: Fine Tuning One Convolutional Layer}
+Using the model defined in test 1, the 3rd Conv2D layer in the 5th block is un-fronzen and the network is trained. The result obtained using RMSprop as optimizer are the following:
 
-\subsubsection{Test 4: Fine Tuning  Two Blocks}
+ 
+ \medskip
+
+\begin{tabular}{ |p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|  }
+\hline
+\multicolumn{5}{|c|}{Feature Extraction} \\
+\hline
+\textbf{Epoch stopped} & \textbf{Validation Accuracy} & \textbf{Testing Accuracy} & \textbf{Validation Loss} & \textbf{Testing Loss} \\
+\hline
+28 & 0.7202 & 0.6253 & 2.3687 & 8.1807\\
+\hline
+\end{tabular}
+
+\medskip
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[height=0.45\textwidth]{img/vgg16ft1acc.png}
+	\caption{Our Feature Extraction Network Accuracy}
+	\label{fig:vgg16ft1acc}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[height=0.45\textwidth]{img/vgg16ft1loss.png}
+	\caption{Our Feature Extraction Network Loss}
+	\label{fig:vgg16ft1loss}
+\end{figure}
+
+
+
+
+
+
+
+
+
+
+\subsubsection{Test 4: test 3 with dropout and different optimizer}
+TODO:Using the model defined in test 3, the 3rd Conv2D layer in the 5th block is un-fronzen and the network is trained. The result obtained using Adam 0.0001 as optimizer are the following:
+
+ 
+ \medskip
+
+\begin{tabular}{ |p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|  }
+\hline
+\multicolumn{5}{|c|}{Feature Extraction} \\
+\hline
+\textbf{Epoch stopped} & \textbf{Validation Accuracy} & \textbf{Testing Accuracy} & \textbf{Validation Loss} & \textbf{Testing Loss} \\
+\hline
+28 & 0.7358 & 0.7218 & 0.9871 & 1.1792\\
+\hline
+\end{tabular}
+
+\medskip
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[height=0.45\textwidth]{img/vgg16ft1dropacc.png}
+	\caption{Our Feature Extraction Network Accuracy}
+	\label{fig:vgg16ft1dropacc}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[height=0.45\textwidth]{img/vgg16ft1droploss.png}
+	\caption{Our Feature Extraction Network Loss}
+	\label{fig:vgg16ft1droploss}
+\end{figure}
+
+
+
+
+
+\subsubsection{Test 5: Fine Tuning Two Convolutional Layers}
+Using 4 but with 2 CNN un-frozen
+
+ \medskip
+
+\begin{tabular}{ |p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|  }
+\hline
+\multicolumn{5}{|c|}{Feature Extraction} \\
+\hline
+\textbf{Epoch stopped} & \textbf{Validation Accuracy} & \textbf{Testing Accuracy} & \textbf{Validation Loss} & \textbf{Testing Loss} \\
+\hline
+22 & 0.7280 & 0.7379 & 1.4253 & 1.2589\\
+\hline
+\end{tabular}
+
+\medskip
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[height=0.45\textwidth]{img/vgg16ft2dropacc.png}
+	\caption{Our Feature Extraction Network Accuracy}
+	\label{fig:vgg16ft2dropacc}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[height=0.45\textwidth]{img/vgg16ft2droploss.png}
+	\caption{Our Feature Extraction Network Loss}
+	\label{fig:vgg16ft2droploss}
+\end{figure}
+
+
+
+
+
+
+
+
+\subsubsection{Test 6: Fine Tuning One Convolutional Layer + weights regularization}
+Using 4 but with 1 CNN un-frozen + L1\_L2
+
+
+
+\medskip
+
+\begin{tabular}{ |p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|  }
+\hline
+\multicolumn{5}{|c|}{Feature Extraction} \\
+\hline
+\textbf{Epoch stopped} & \textbf{Validation Accuracy} & \textbf{Testing Accuracy} & \textbf{Validation Loss} & \textbf{Testing Loss} \\
+\hline
+22& 0.7487 & 0.7471 & 21.5590 & 9.8097\\
+\hline
+\end{tabular}
+
+\medskip
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[height=0.45\textwidth]{img/vgg16ft1dropregacc.png}
+	\caption{Our Feature Extraction Network Accuracy}
+	\label{fig:vgg16ft1dropregacc}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[height=0.45\textwidth]{img/vgg16ft1dropregloss.png}
+	\caption{Our Feature Extraction Network Loss}
+	\label{fig:vgg16ft1dropregloss}
+\end{figure}
+
+
+
+
+
+
+
+
+
+\subsubsection{Test 7: Fine Tuning Two Convolutional Layers + weights regularization}
+Using 5 but with 2 CNN un-frozen + L1\_L2
+
+ \medskip
+
+\begin{tabular}{ |p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|  }
+\hline
+\multicolumn{5}{|c|}{Feature Extraction} \\
+\hline
+\textbf{Epoch stopped} & \textbf{Validation Accuracy} & \textbf{Testing Accuracy} & \textbf{Validation Loss} & \textbf{Testing Loss} \\
+\hline
+25 & 0.7694 & 0.7494 & 15.6742 & 9.8097\\
+\hline
+\end{tabular}
+
+\medskip
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[height=0.45\textwidth]{img/vgg16ft2dropregacc.png}
+	\caption{Our Feature Extraction Network Accuracy}
+	\label{fig:vgg16ft2dropregacc}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[height=0.45\textwidth]{img/vgg16ft2dropregloss.png}
+	\caption{Our Feature Extraction Network Loss}
+	\label{fig:vgg16ft2dropregloss}
+\end{figure}
+
+
+
+
+
+
+
+
 
 \subsubsection{Test 8: Genetic Algorithm for Hyper-parameters and Architecture Optimization}
 
