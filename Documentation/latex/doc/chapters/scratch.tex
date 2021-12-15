@@ -1,1 +1,56 @@
 \section{CNN from Scratch}
+This chapter shows the results of the training of several custom architecture, that have been defined in order to solve the classification task.
+Starting from a very simple model, we start to analyze how to improve it and what modifications to apply in order to improve performance, taking into account mainly the accuracy on the validation test, but also considering other metrics like training time or number of parameters.
+The overall strategy is the following:
+\begin{itemize}
+\item test of different custom architectures defined from scratch and selection of the most promising one
+\item analysis of the level of fitting, try of different techniques to fight possible underfitting/overfitting
+\item evaluation of performance with the addition of a Batch Normalization layer
+\item hyperparameters optimization on the best model so far using a Genetic Algorithm(see Section 2.6)
+\end{itemize}
+
+The objective of the presented procedure is not the total exploration and exploitation of the search space, but it aims at finding good results in a reasonable time exploiting an ad-hoc heuristic search.
+The tested models are the following:\footnote{all the models have been tested using data augmentation due to the lack of training samples. Some experiments without augmentation leaded to very quick overfitting and poor results, thus they have not been reported since considered as not interesting}
+
+\subsection{Standard CNN}
+The first experiment has been conducted using a customized standard CNN that exploits Convolutional Layers and max Pooling to process input images. To start, we defined a very simple model, whose structure is reported in the image \ref{fig:standardCNN}. 
+\begin{figure}[H]
+	\centering
+	\includegraphics[height=0.6\textwidth]{img/scratch/standardCNN.jpg}
+	\caption{Customized Standard CNN Architecture}
+	\label{fig:standardCNN}
+\end{figure}
+
+\noindent This model is trained using these default hyperparameters:
+\begin{itemize}
+\item optimizer: \textit{ADAM}
+\item dropout rate :0.0
+\item learning rate: optimizer's default
+\item batch size: 128
+\item learning rate decay: none
+\end{itemize}
+
+\noindent In particular, we set a large value for batch size both because our main goal is to maximize the accuracy and also (as presented in the Introduction) to face off with the great variability of paintings with very dissimilar style but belonging to the same author. In this way, we increase the probability of a batch to be "complete", thus being representative of this variability.
+
+\noindent The results obtained are the following:
+
+\medskip
+
+\begin{tabular}{ |p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|  }
+\hline
+\multicolumn{5}{|c|}{StandardCNN} \\
+\hline
+\textbf{Epoch stopped} & \textbf{Validation Accuracy} & \textbf{Testing Accuracy} & \textbf{Validation Loss} & \textbf{Testing Loss} \\
+\hline
+15 & 0.5730 & ??? & 1,3656 & ???\\
+\hline
+\end{tabular}
+
+\medskip
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[height=0.45\textwidth]{img/scratch/standardCNN_results.png}
+	\caption{Standard CNN: results}
+	\label{fig:standardCNN_acc}
+\end{figure}
