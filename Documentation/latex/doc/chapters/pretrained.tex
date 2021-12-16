@@ -467,8 +467,9 @@ Unfortunately, finetuning this much with these additional layers led to worst pe
 
 
 \subsection{ResNet101V2}
+ResNet101 was implemented as one of the model used in the ensemble method cited in the ResNet50V2 introduction. ResNet101 is an extension of ResNet50 that goes deeper reaching 101 layers in depth, simply adding more convolutional 'sub'-blocks in the blocks\footnote{Referring to the notation used before, we intend as a sub-block a block between two adds.}. ResNet101 proved to be slightly more accurate than ResNet50.\footnote{It is not only additional network used in the ensemble method, an extension of it was also used, ResNet152. This model is the more accurate of the three, but because of it size we decide to limit our studies to the 101-layers version.}
 
-\subsubsection{Test 1: Classical ResNet101V2 with 50 classes}
+\subsubsection{Test 1: Classical ResNet101V2}
 
 \subsubsection{Test 2: Completely Newly Output Layers Architecture}
 
