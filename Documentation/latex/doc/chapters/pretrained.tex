@@ -48,20 +48,19 @@ The original VGG16 comes with a couple of 4096 FC layers followed by 1000 softma
 
 
 \begin{figure}[H]
-	\centering
-	\includegraphics[height=0.45\textwidth]{img/vgg16/vgg16fe1acc.png}
-	\caption{Our Feature Extraction Network Accuracy}
-	\label{fig:vgg16fe1acc}
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/vgg16/vgg16fe1acc.png} 
+		\caption{Simple VGG16 Feature Extraction Accuracy}
+		\label{fig:vgg16fe1acc}
+	\end{subfigure}
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/vgg16/vgg16fe1loss.png}
+		\caption{Simple VGG16 Feature Extraction Loss}
+		\label{fig:vgg16fe1loss}
+	\end{subfigure}
 \end{figure}
 
-\begin{figure}[H]
-	\centering
-	\includegraphics[height=0.45\textwidth]{img/vgg16/vgg16fe1loss.png}
-	\caption{Our Feature Extraction Network Loss}
-	\label{fig:vgg16fe1loss}
-\end{figure}
-
-\subsubsection{Test 2: Adding dropout to Test 1}
+\subsubsection{Test 2: Adding Dropout to Test 1}
 We have two possible positions to use the dropout layer in our network and they are after each 256-dense layer, but we decided to use just one layer at the end of the second 256-Dense layer (\textit{my\_dense1}) as shown in Figure\ref{fig:vgg16fe2}. We didn't use a dropout layer between the two 256-dense layers, since this type of architecture led to worst performance, this mainly because we would have less units to fully train our topic-specific network.
 \begin{figure}[H]
 	\centering
@@ -77,7 +76,7 @@ We have two possible positions to use the dropout layer in our network and they 
 
 \begin{tabular}{ |p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|  }
 \hline
-\multicolumn{5}{|c|}{Feature Extraction} \\
+\multicolumn{5}{|c|}{Feature Extraction w/ dropout} \\
 \hline
 \textbf{Epoch stopped} & \textbf{Validation Accuracy} & \textbf{Testing Accuracy} & \textbf{Validation Loss} & \textbf{Testing Loss} \\
 \hline
@@ -88,23 +87,22 @@ We have two possible positions to use the dropout layer in our network and they 
 \medskip
 
 \begin{figure}[H]
-	\centering
-	\includegraphics[height=0.45\textwidth]{img/vgg16/vgg16fe2acc.png}
-	\caption{Test 2 Accuracy}
-	\label{fig:vgg16fe2acc}
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/vgg16/vgg16fe2acc.png} 
+		\caption{Test 2 Accuracy}
+		\label{fig:vgg16fe2acc}
+	\end{subfigure}
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/vgg16/vgg16fe2loss.png}
+		\caption{Test 2 Loss}
+		\label{fig:vgg16fe2oss}
+	\end{subfigure}
 \end{figure}
 
-\begin{figure}[H]
-	\centering
-	\includegraphics[height=0.45\textwidth]{img/vgg16/vgg16fe2loss.png}
-	\caption{Test 2 Loss}
-	\label{fig:vgg16fe2oss}
-\end{figure}
-
-\noindent TODO: As expected, dropout mitigated the magnitude of overfitting, however our network perform slightly worst (now the validation accuracy is 0.73 and before was 0.74) than without the dropout layer.
+\noindent As expected, dropout mitigated the magnitude of overfitting, however our network perform slightly worst (now the validation accuracy is 0.73 and before was 0.74) than without the dropout layer.
 
 
-\subsubsection{Test 3: Fine Tuning One Convolutional Layer}
+\subsubsection{Test 3: Finetuning One Convolutional Layer}
 Using the model defined in test 1, the 3rd Conv2D layer in the 5th block is un-fronzen and the network is trained. The result obtained using RMSprop as optimizer are the following:
 
  
@@ -112,7 +110,7 @@ Using the model defined in test 1, the 3rd Conv2D layer in the 5th block is un-f
 
 \begin{tabular}{ |p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|  }
 \hline
-\multicolumn{5}{|c|}{Feature Extraction} \\
+\multicolumn{5}{|c|}{Finetuning one convolutional layer} \\
 \hline
 \textbf{Epoch stopped} & \textbf{Validation Accuracy} & \textbf{Testing Accuracy} & \textbf{Validation Loss} & \textbf{Testing Loss} \\
 \hline
@@ -123,17 +121,16 @@ Using the model defined in test 1, the 3rd Conv2D layer in the 5th block is un-f
 \medskip
 
 \begin{figure}[H]
-	\centering
-	\includegraphics[height=0.45\textwidth]{img/vgg16/vgg16ft1acc.png}
-	\caption{Test 3 Accuracy}
-	\label{fig:vgg16ft1acc}
-\end{figure}
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[height=0.45\textwidth]{img/vgg16/vgg16ft1loss.png}
-	\caption{Test 3 Loss}
-	\label{fig:vgg16ft1loss}
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/vgg16/vgg16ft1acc.png} 
+		\caption{Test 3 Accuracy}
+		\label{fig:vgg16ft1acc}
+	\end{subfigure}
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/vgg16/vgg16ft1loss.png}
+		\caption{Test 3 Loss}
+		\label{fig:vgg16ft1loss}
+	\end{subfigure}
 \end{figure}
 
 
@@ -152,7 +149,7 @@ To overcome the previous problems, the overfitting and the strange shape behavio
 
 \begin{tabular}{ |p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|  }
 \hline
-\multicolumn{5}{|c|}{Feature Extraction} \\
+\multicolumn{5}{|c|}{Finetuning one conv layer w/ dropout and Adam} \\
 \hline
 \textbf{Epoch stopped} & \textbf{Validation Accuracy} & \textbf{Testing Accuracy} & \textbf{Validation Loss} & \textbf{Testing Loss} \\
 \hline
@@ -163,18 +160,18 @@ To overcome the previous problems, the overfitting and the strange shape behavio
 \medskip
 
 \begin{figure}[H]
-	\centering
-	\includegraphics[height=0.45\textwidth]{img/vgg16/vgg16ft1dropacc.png}
-	\caption{Test 4 Accuracy}
-	\label{fig:vgg16ft1dropacc}
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/vgg16/vgg16ft1dropacc.png} 
+		\caption{Test 4 Accuracy}
+		\label{fig:vgg16ft1dropacc}
+	\end{subfigure}
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/vgg16/vgg16ft1droploss.png}
+		\caption{Test 4 Loss}
+		\label{fig:vgg16ft1droploss}
+	\end{subfigure}
 \end{figure}
 
-\begin{figure}[H]
-	\centering
-	\includegraphics[height=0.45\textwidth]{img/vgg16/vgg16ft1droploss.png}
-	\caption{Test 4 Loss}
-	\label{fig:vgg16ft1droploss}
-\end{figure}
 
 \noindent Adding dropout and a different optimizer with a little learning rate, we finally obtained what we were aiming. Anyway, the result is now comparable to the test 1, however now we our using a more complex network which is not good if the results are the same.
 
@@ -182,14 +179,14 @@ However we can still do something, the training accuracy increases very rapidly 
 
 
 
-\subsubsection{Test 5: Fine Tuning Two Convolutional Layers}
+\subsubsection{Test 5: Finetuning Two Convolutional Layers}
 This test is basically test 4, but finetuning the last two convolutional layers of VGG16.
 
  \medskip
 
 \begin{tabular}{ |p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|  }
 \hline
-\multicolumn{5}{|c|}{Feature Extraction} \\
+\multicolumn{5}{|c|}{Finetuning two convolutional layers} \\
 \hline
 \textbf{Epoch stopped} & \textbf{Validation Accuracy} & \textbf{Testing Accuracy} & \textbf{Validation Loss} & \textbf{Testing Loss} \\
 \hline
@@ -200,18 +197,18 @@ This test is basically test 4, but finetuning the last two convolutional layers 
 \medskip
 
 \begin{figure}[H]
-	\centering
-	\includegraphics[height=0.45\textwidth]{img/vgg16/vgg16ft2dropacc.png}
-	\caption{Test 5 Accuracy}
-	\label{fig:vgg16ft2dropacc}
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/vgg16/vgg16ft2dropacc.png} 
+		\caption{Test 5 Accuracy}
+		\label{fig:vgg16ft2dropacc}
+	\end{subfigure}
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/vgg16/vgg16ft2droploss.png}
+		\caption{Test 5 Loss}
+		\label{fig:vgg16ft2droploss}
+	\end{subfigure}
 \end{figure}
 
-\begin{figure}[H]
-	\centering
-	\includegraphics[height=0.45\textwidth]{img/vgg16/vgg16ft2droploss.png}
-	\caption{Test 5 Loss}
-	\label{fig:vgg16ft2droploss}
-\end{figure}
 
 Following the approach used in the previous test we obtained also here more smoothed graphs, but the performance is little lower than before. The problem here is that we are propagating to the second layer in block 5 gradients that are not really improvements of the ones set by the \textit{imagenet} default configuration.
 
@@ -220,7 +217,7 @@ Following the approach used in the previous test we obtained also here more smoo
 
 
 
-\subsubsection{Test 6: Fine Tuning One Convolutional Layer + weights regularization}
+\subsubsection{Test 6: Finetuning One Convolutional Layer and Weights Regularization}
 In this paragraph we exploited the conclusion mentioned in test 4, introducing here \textit{L1\_L2 weight regularization} on the one convolutional layer finetuned network.
 
 
@@ -228,7 +225,7 @@ In this paragraph we exploited the conclusion mentioned in test 4, introducing h
 
 \begin{tabular}{ |p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|  }
 \hline
-\multicolumn{5}{|c|}{Feature Extraction} \\
+\multicolumn{5}{|c|}{Finetuning one conv layer and weights regularization} \\
 \hline
 \textbf{Epoch stopped} & \textbf{Validation Accuracy} & \textbf{Testing Accuracy} & \textbf{Validation Loss} & \textbf{Testing Loss} \\
 \hline
@@ -239,17 +236,16 @@ In this paragraph we exploited the conclusion mentioned in test 4, introducing h
 \medskip
 
 \begin{figure}[H]
-	\centering
-	\includegraphics[height=0.45\textwidth]{img/vgg16/vgg16ft1dropregacc.png}
-	\caption{Test 6 Accuracy}
-	\label{fig:vgg16ft1dropregacc}
-\end{figure}
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[height=0.45\textwidth]{img/vgg16/vgg16ft1dropregloss.png}
-	\caption{Test 6 Loss}
-	\label{fig:vgg16ft1dropregloss}
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/vgg16/vgg16ft1dropregacc.png} 
+		\caption{Test 6 Accuracy}
+		\label{fig:vgg16ft1dropregacc}
+	\end{subfigure}
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/vgg16/vgg16ft1dropregloss.png}
+		\caption{Test 6 Loss}
+		\label{fig:vgg16ft1dropregloss}
+	\end{subfigure}
 \end{figure}
 
 The shapes of the graphs are more or less the same of the two had in test 4, the only things that changes are the values of the losses which are here higher and more curvilinear due to the weight regularization approach used. Anyway, this heavy regularization helped us to surpass the result in test 1, not by much but it is an improvement that, maybe, can be exploited finetuning more. Following this lead, in the next paragraph we use weight regularization with two convolutional layers finetuned.
@@ -259,14 +255,14 @@ The shapes of the graphs are more or less the same of the two had in test 4, the
 
 
 
-\subsubsection{Test 7: Fine Tuning Two Convolutional Layers and Weights Regularization}
+\subsubsection{Test 7: Finetuning Two Convolutional Layers and Weights Regularization}
 Following the good result obtained in test 6, in this paragraph we add, to the network used in test 5, \textit{L1\_L2 weight regularization}.
 
  \medskip
 
 \begin{tabular}{ |p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|  }
 \hline
-\multicolumn{5}{|c|}{Feature Extraction} \\
+\multicolumn{5}{|c|}{Finetuning two conv layers and weights regularization} \\
 \hline
 \textbf{Epoch stopped} & \textbf{Validation Accuracy} & \textbf{Testing Accuracy} & \textbf{Validation Loss} & \textbf{Testing Loss} \\
 \hline
@@ -276,18 +272,18 @@ Following the good result obtained in test 6, in this paragraph we add, to the n
 
 \medskip
 
-\begin{figure}[H]
-	\centering
-	\includegraphics[height=0.45\textwidth]{img/vgg16/vgg16ft2dropregacc.png}
-	\caption{Test 7 Accuracy}
-	\label{fig:vgg16ft2dropregacc}
-\end{figure}
 
 \begin{figure}[H]
-	\centering
-	\includegraphics[height=0.45\textwidth]{img/vgg16/vgg16ft2dropregloss.png}
-	\caption{Test 7 Loss}
-	\label{fig:vgg16ft2dropregloss}
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/vgg16/vgg16ft2dropregacc.png} 
+		\caption{Test 7 Accuracy}
+		\label{fig:vgg16ft2dropregacc}
+	\end{subfigure}
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/vgg16/vgg16ft2dropregloss.png}
+		\caption{Test 7 Loss}
+		\label{fig:vgg16ft2dropregloss}
+	\end{subfigure}
 \end{figure}
 
 Even if the increase the flexibility of our network finetuning more layers, as hoped, we achieved a better accuracy which is also the best obtained so far.
@@ -302,9 +298,15 @@ Even if the increase the flexibility of our network finetuning more layers, as h
 
 
 \subsection{ResNet50V2}
+ResNet stands for Residual Network. It is an innovative neural network that was first introduced by Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun in their 2015 computer vision research paper titled "Deep Residual Learning for Image Recognition". This model was immensely successful, as can be ascertained from the fact that its ensemble won the top position at the ILSVRC 2015 classification competition with an error of only 3.57\%. Additionally, it also came first in the ImageNet detection, ImageNet localization, COCO detection, and COCO segmentation in the ILSVRC \& COCO competitions of 2015.
+
 
 
 \subsubsection{Test 1: Classical ResNet50V2 (Feature Extraction)}
+The original ResNet50 comes with a GlobalAveragePooling2D and a prediction layer soon after. In this test we used the same approach, resizing the prediction layer to the number of classes we have.
+
+\noindent The results obtained after training are:
+\medskip
 
 \begin{tabular}{ |p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|  }
 \hline
@@ -317,25 +319,29 @@ Even if the increase the flexibility of our network finetuning more layers, as h
 \end{tabular}
 
 \begin{figure}[H]
-	\centering
-	\includegraphics[height=0.45\textwidth]{img/resnet50v2/resnet50acc.png}
-	\caption{Our Feature Extraction Network Accuracy}
-	\label{fig:resnet50acc}
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/resnet50v2/resnet50acc.png} 
+		\caption{Simple ResNet50V2 Feature Extraction Accuracy}
+	\end{subfigure}
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/resnet50v2/resnet50loss.png}
+		\caption{Simple ResNet50V2 Feature Extraction Loss}
+	\end{subfigure}
 \end{figure}
 
-\begin{figure}[H]
-	\centering
-	\includegraphics[height=0.45\textwidth]{img/resnet50v2/resnet50loss.png}
-	\caption{Our Feature Extraction Network Loss}
-	\label{fig:resnet50loss}
-\end{figure}
+The network poorly performed compered with the results obtained using VGG16. This can be explained since the \textit{imagenet dataset} is not specialized in distinguish paintings' artists, thus the frozen weights of our networks are very far to be the ones we need. To overcome this problem we can fine tune or add more layers after the \textit{GlobalAveragePooling2D} layer.
+
+Another problem can be notice looking at the accuracy plot, the training accuracy is less than the validation accuracy. To understand this issue, it is important to consider the difference of the number of images in the training and validation set. The validation set is made of about few hundreds of pictures against the few thousands of the training set, the latter may involve, with greater probability, paintings being part of a different period of the artists (e.g., the example shown in Image\ref{fig:picasso}), which can lead to a worst accuracy.
 
 
-\subsubsection{Test 2: Finetune 1 block}
+\subsubsection{Test 2: Finetuning 1 block}
+ResNet50V2 is made of multiple big blocks (i.e., 5) so called \textit{conv} in the model. These blocks are made of sub-blocks connected by each other by an add layer which connects the processed input (e.g., processed by Conv2D, Padding, Pooling, BatchNormalization) and the residual input\footnote{Sometimes the residual is downsampled using a max pooling layer, this is done in order to match the actual size of the feature map obtained at that level of the network.}. We finetuned considering this under-blocks, hence in this paragraph we finetuned the \textit{conv5\_block3}.
+
+\medskip
 
 \begin{tabular}{ |p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|  }
 \hline
-\multicolumn{5}{|c|}{Feature Extraction} \\
+\multicolumn{5}{|c|}{Finetuning 1 block} \\
 \hline
 \textbf{Epoch stopped} & \textbf{Validation Accuracy} & \textbf{Testing Accuracy} & \textbf{Validation Loss} & \textbf{Testing Loss} \\
 \hline
@@ -344,24 +350,30 @@ Even if the increase the flexibility of our network finetuning more layers, as h
 \end{tabular}
 
 \begin{figure}[H]
-	\centering
-	\includegraphics[height=0.45\textwidth]{img/resnet50v2/resnet50finetuned1acc.png}
-	\caption{Our Feature Extraction Network Accuracy}
-	\label{fig:resnet50finetuned1acc}
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/resnet50v2/resnet50finetuned1acc.png} 
+		\caption{ResNet50V2 Test 2 Accuracy}
+		\label{fig:resnet50finetuned1acc}
+	\end{subfigure}
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/resnet50v2/resnet50finetuned1loss.png}
+		\caption{ResNet50V2 Test 2 Loss}
+		\label{fig:resnet50finetuned1loss}
+	\end{subfigure}
 \end{figure}
 
-\begin{figure}[H]
-	\centering
-	\includegraphics[height=0.45\textwidth]{img/resnet50v2/resnet50finetuned1loss.png}
-	\caption{Our Feature Extraction Network Loss}
-	\label{fig:resnet50finetuned1loss}
-\end{figure}
+\noindent As expected, the network has definitely reach a more satisfactory result. Also the behaviors of the curves now is more reasonable. 
 
-\subsubsection{Test 3: Finetuned 2 blocks}
+
+
+\subsubsection{Test 3: Finetuning 2 blocks}
+Since finetuning a block led to better results, the next step we did was to tuning also the previous sub-block, thus starting to tuning from \textit{conv5\_block2}.
+
+\medskip
 
 \begin{tabular}{ |p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|  }
 \hline
-\multicolumn{5}{|c|}{Feature Extraction} \\
+\multicolumn{5}{|c|}{Finetuning 2 blocks} \\
 \hline
 \textbf{Epoch stopped} & \textbf{Validation Accuracy} & \textbf{Testing Accuracy} & \textbf{Validation Loss} & \textbf{Testing Loss} \\
 \hline
@@ -370,22 +382,83 @@ Even if the increase the flexibility of our network finetuning more layers, as h
 \end{tabular}
 
 \begin{figure}[H]
-	\centering
-	\includegraphics[height=0.45\textwidth]{img/resnet50v2/resnet50finetuned2acc.png}
-	\caption{Our Feature Extraction Network Accuracy}
-	\label{fig:resnet50finetuned2acc}
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/resnet50v2/resnet50finetuned2acc.png} 
+		\caption{ResNet50V2 Test 3 Accuracy}
+		\label{fig:resnet50finetuned2acc}
+	\end{subfigure}
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/resnet50v2/resnet50finetuned2loss.png}
+		\caption{ResNet50V2 Test 3 Loss}
+		\label{fig:resnet50finetuned2loss}
+	\end{subfigure}
 \end{figure}
+
+This results proves that our idea of finetuning was good since the network improved a little. Anyway, finetuning more can be risky since the computational power and time needed can be very high and becoming unbearable to the limits imposed by Colab. Thus, we tried to improved (without satisfaction, as the nexts to paragraphs describe) our network adding dense layers between our \textit{GlobalAveragePooling2D} and our prediction layer, following the structure used in the VGG16 study.
+
+
+
+\subsubsection{Test 4: Finetuning with One Block and Adding Two Dense layers}
+Here we took the same approach of test 3, but adding two dense layers followed by a dropout layer (as used in figure\ref{fig:vgg16fe2}).
+
+\medskip
+
+\begin{tabular}{ |p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|  }
+\hline
+\multicolumn{5}{|c|}{Finetuning one block and dense layers} \\
+\hline
+\textbf{Epoch stopped} & \textbf{Validation Accuracy} & \textbf{Testing Accuracy} & \textbf{Validation Loss} & \textbf{Testing Loss} \\
+\hline
+20 & 0.6736 & 0.6368 & 1.6655 & 1.7734\\
+\hline
+\end{tabular}
 
 \begin{figure}[H]
-	\centering
-	\includegraphics[height=0.45\textwidth]{img/resnet50v2/resnet50finetuned2loss.png}
-	\caption{Our Feature Extraction Network Loss}
-	\label{fig:resnet50finetuned2loss}
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/resnet50v2/resnet50finetuned1denseacc.png} 
+		\caption{ResNet50V2 Test 4 Accuracy}
+		\label{fig:resnet50finetuned1denseacc}
+	\end{subfigure}
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/resnet50v2/resnet50finetuned1denseloss.png}
+		\caption{ResNet50V2 Test 4 Loss}
+		\label{fig:resnet50finetuned1denseloss}
+	\end{subfigure}
 \end{figure}
 
-\subsubsection{Test 4: Fine Tuning with One Layer}
+Enlarging in this way the network resulted in better performance. This can be because the dense layers before the softmax can better exploit the information of the \textit{GlobalAveragePooling2D}, keeping the problem for more time to a higher dimensionally than the one used for prediction.
 
-\subsubsection{Test 5: Fine Tuning with Two Layers}
+
+\subsubsection{Test 5: Finetuning with Two Blocks and Adding Two Dense layers}
+In this paragraph we did the same thing done in test 4, but finetuning two blocks as in test 3.
+
+\medskip
+
+\begin{tabular}{ |p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|  }
+\hline
+\multicolumn{5}{|c|}{Finetuning two blocks and dense layers} \\
+\hline
+\textbf{Epoch stopped} & \textbf{Validation Accuracy} & \textbf{Testing Accuracy} & \textbf{Validation Loss} & \textbf{Testing Loss} \\
+\hline
+17 & 0.6373 & 0.5954 & 1.6404 & 2.1089\\
+\hline
+\end{tabular}
+
+\begin{figure}[H]
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/resnet50v2/resnet50finetuned2denseacc.png} 
+		\caption{ResNet50V2 Test 5 Accuracy}
+		\label{fig:resnet50finetuned2denseacc}
+	\end{subfigure}
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/resnet50v2/resnet50finetuned2denseloss.png}
+		\caption{ResNet50V2 Test 5 Loss}
+		\label{fig:resnet50finetuned2denseloss}
+	\end{subfigure}
+\end{figure}
+
+
+Unfortunately, finetuning this much with these additional layers led to worst performance. Perhaps, this is due to backpropagation, which changed the weights (which are 9M, against the 14M that are not trainable) to a not-optimal solution. Anyway, this result is also too poor compared to test 3, which without having the newly added dense layers still perform better.
 
 
 
