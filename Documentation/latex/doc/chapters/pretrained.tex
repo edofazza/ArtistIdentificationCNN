@@ -62,7 +62,7 @@ The original VGG16 comes with a couple of 4096 FC layers followed by 1000 softma
 \end{figure}
 
 \subsubsection{Test 2: Adding dropout to Test 1}
-We have two possible positions to use the dropout layer in our network and they are after each 256-dense layer, thus we change our previous network in the following way\footnote{We didn't use a dropout layer between the two 256-dense layers, since this type of architecture led to worst performance}:
+We have two possible positions to use the dropout layer in our network and they are after each 256-dense layer, but we decided to use just one layer at the end of the second 256-Dense layer (\textit{my\_dense1}) as shown in Figure\ref{fig:vgg16fe2}. We didn't use a dropout layer between the two 256-dense layers, since this type of architecture led to worst performance, this mainly because we would have less units to fully train our topic-specific network.
 \begin{figure}[H]
 	\centering
 	\includegraphics[height=0.45\textwidth]{img/vgg16/vgg16fe2.png}
@@ -90,19 +90,18 @@ We have two possible positions to use the dropout layer in our network and they 
 \begin{figure}[H]
 	\centering
 	\includegraphics[height=0.45\textwidth]{img/vgg16/vgg16fe2acc.png}
-	\caption{Our Feature Extraction Network Accuracy}
+	\caption{Test 2 Accuracy}
 	\label{fig:vgg16fe2acc}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[height=0.45\textwidth]{img/vgg16/vgg16fe2loss.png}
-	\caption{Our Feature Extraction Network Loss}
+	\caption{Test 2 Loss}
 	\label{fig:vgg16fe2oss}
 \end{figure}
 
-\noindent TODO: As expected, dropout mitigated the magnitude of overfitting, now the networks need more time to reach high values of training accuracy and the validation improved to ???.
-
+\noindent TODO: As expected, dropout mitigated the magnitude of overfitting, however our network perform slightly worst (now the validation accuracy is 0.73 and before was 0.74) than without the dropout layer.
 
 
 \subsubsection{Test 3: Fine Tuning One Convolutional Layer}
@@ -126,20 +125,19 @@ Using the model defined in test 1, the 3rd Conv2D layer in the 5th block is un-f
 \begin{figure}[H]
 	\centering
 	\includegraphics[height=0.45\textwidth]{img/vgg16/vgg16ft1acc.png}
-	\caption{Our Feature Extraction Network Accuracy}
+	\caption{Test 3 Accuracy}
 	\label{fig:vgg16ft1acc}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[height=0.45\textwidth]{img/vgg16/vgg16ft1loss.png}
-	\caption{Our Feature Extraction Network Loss}
+	\caption{Test 3 Loss}
 	\label{fig:vgg16ft1loss}
 \end{figure}
 
 
-
-
+Again the performance are worst than in test one, but looking at the graphs it can be seen that not only our network overfitted very fast, but it forms also few fang-shaped changes in direction. 
 
 
 
@@ -147,7 +145,7 @@ Using the model defined in test 1, the 3rd Conv2D layer in the 5th block is un-f
 
 
 \subsubsection{Test 4: test 3 with dropout and different optimizer}
-TODO:Using the model defined in test 3, the 3rd Conv2D layer in the 5th block is un-fronzen and the network is trained. The result obtained using Adam 0.0001 as optimizer are the following:
+To overcome the previous problems, the overfitting and the strange shape behavior, in this test we opt to use \textbf{Adam} as an optimizer, changing its default learning rate (i.e., 0.001) to 0.0001 in order to slowly learn and hoping to have a smoother accuracy and loss functions.
 
  
  \medskip
@@ -167,23 +165,25 @@ TODO:Using the model defined in test 3, the 3rd Conv2D layer in the 5th block is
 \begin{figure}[H]
 	\centering
 	\includegraphics[height=0.45\textwidth]{img/vgg16/vgg16ft1dropacc.png}
-	\caption{Our Feature Extraction Network Accuracy}
+	\caption{Test 4 Accuracy}
 	\label{fig:vgg16ft1dropacc}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[height=0.45\textwidth]{img/vgg16/vgg16ft1droploss.png}
-	\caption{Our Feature Extraction Network Loss}
+	\caption{Test 4 Loss}
 	\label{fig:vgg16ft1droploss}
 \end{figure}
 
+\noindent Adding dropout and a different optimizer with a little learning rate, we finally obtained what we were aiming. Anyway, the result is now comparable to the test 1, however now we our using a more complex network which is not good if the results are the same.
 
+However we can still do something, the training accuracy increases very rapidly even if dropout is applied. To decrease this effect in test 6 we use weight regularization techniques.
 
 
 
 \subsubsection{Test 5: Fine Tuning Two Convolutional Layers}
-Using 4 but with 2 CNN un-frozen
+This test is basically test 4, but finetuning the last two convolutional layers of VGG16.
 
  \medskip
 
@@ -202,18 +202,18 @@ Using 4 but with 2 CNN un-frozen
 \begin{figure}[H]
 	\centering
 	\includegraphics[height=0.45\textwidth]{img/vgg16/vgg16ft2dropacc.png}
-	\caption{Our Feature Extraction Network Accuracy}
+	\caption{Test 5 Accuracy}
 	\label{fig:vgg16ft2dropacc}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[height=0.45\textwidth]{img/vgg16/vgg16ft2droploss.png}
-	\caption{Our Feature Extraction Network Loss}
+	\caption{Test 5 Loss}
 	\label{fig:vgg16ft2droploss}
 \end{figure}
 
-
+Following the approach used in the previous test we obtained also here more smoothed graphs, but the performance is little lower than before. The problem here is that we are propagating to the second layer in block 5 gradients that are not really improvements of the ones set by the \textit{imagenet} default configuration.
 
 
 
@@ -221,8 +221,7 @@ Using 4 but with 2 CNN un-frozen
 
 
 \subsubsection{Test 6: Fine Tuning One Convolutional Layer + weights regularization}
-Using 4 but with 1 CNN un-frozen + L1\_L2
-
+In this paragraph we exploited the conclusion mentioned in test 4, introducing here \textit{L1\_L2 weight regularization} on the one convolutional layer finetuned network.
 
 
 \medskip
@@ -242,27 +241,26 @@ Using 4 but with 1 CNN un-frozen + L1\_L2
 \begin{figure}[H]
 	\centering
 	\includegraphics[height=0.45\textwidth]{img/vgg16/vgg16ft1dropregacc.png}
-	\caption{Our Feature Extraction Network Accuracy}
+	\caption{Test 6 Accuracy}
 	\label{fig:vgg16ft1dropregacc}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[height=0.45\textwidth]{img/vgg16/vgg16ft1dropregloss.png}
-	\caption{Our Feature Extraction Network Loss}
+	\caption{Test 6 Loss}
 	\label{fig:vgg16ft1dropregloss}
 \end{figure}
 
+The shapes of the graphs are more or less the same of the two had in test 4, the only things that changes are the values of the losses which are here higher and more curvilinear due to the weight regularization approach used. Anyway, this heavy regularization helped us to surpass the result in test 1, not by much but it is an improvement that, maybe, can be exploited finetuning more. Following this lead, in the next paragraph we use weight regularization with two convolutional layers finetuned.
 
 
 
 
 
 
-
-
-\subsubsection{Test 7: Fine Tuning Two Convolutional Layers + weights regularization}
-Using 5 but with 2 CNN un-frozen + L1\_L2
+\subsubsection{Test 7: Fine Tuning Two Convolutional Layers and Weights Regularization}
+Following the good result obtained in test 6, in this paragraph we add, to the network used in test 5, \textit{L1\_L2 weight regularization}.
 
  \medskip
 
@@ -281,21 +279,18 @@ Using 5 but with 2 CNN un-frozen + L1\_L2
 \begin{figure}[H]
 	\centering
 	\includegraphics[height=0.45\textwidth]{img/vgg16/vgg16ft2dropregacc.png}
-	\caption{Our Feature Extraction Network Accuracy}
+	\caption{Test 7 Accuracy}
 	\label{fig:vgg16ft2dropregacc}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[height=0.45\textwidth]{img/vgg16/vgg16ft2dropregloss.png}
-	\caption{Our Feature Extraction Network Loss}
+	\caption{Test 7 Loss}
 	\label{fig:vgg16ft2dropregloss}
 \end{figure}
 
-
-
-
-
+Even if the increase the flexibility of our network finetuning more layers, as hoped, we achieved a better accuracy which is also the best obtained so far.
 
 
 
