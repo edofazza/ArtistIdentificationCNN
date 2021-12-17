@@ -470,17 +470,237 @@ Unfortunately, finetuning this much with these additional layers led to worst pe
 ResNet101 was implemented as one of the model used in the ensemble method cited in the ResNet50V2 introduction. ResNet101 is an extension of ResNet50 that goes deeper reaching 101 layers in depth, simply adding more convolutional 'sub'-blocks in the blocks\footnote{Referring to the notation used before, we intend as a sub-block a block between two adds.}. ResNet101 proved to be slightly more accurate than ResNet50.\footnote{It is not only additional network used in the ensemble method, an extension of it was also used, ResNet152. This model is the more accurate of the three, but because of it size we decide to limit our studies to the 101-layers version.}
 
 \subsubsection{Test 1: Classical ResNet101V2}
+The original ResNet50 comes with a GlobalAveragePooling2D and a prediction layer soon after. In this test we used the same approach, resizing the prediction layer to the number of classes we have.
 
-\subsubsection{Test 2: Completely Newly Output Layers Architecture}
+\noindent The results obtained after training are:
 
-\subsubsection{Test 3: Fine Tuning with One Layer}
+\medskip
 
-\subsubsection{Test 4: Fine Tuning with Two Layers}
+\begin{tabular}{ |p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|  }
+\hline
+\multicolumn{5}{|c|}{Feature Extraction} \\
+\hline
+\textbf{Epoch stopped} & \textbf{Validation Accuracy} & \textbf{Testing Accuracy} & \textbf{Validation Loss} & \textbf{Testing Loss} \\
+\hline
+11 & 0.3756 & 0.3195 & 1.9798 & 2.6044\\
+\hline
+\end{tabular}
+
+\begin{figure}[H]
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/resnet101v2/resnet101feacc.png} 
+		\caption{ResNet101V2 Feature Extraction Accuracy}
+		\label{fig:resnet101feacc}
+	\end{subfigure}
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/resnet101v2/resnet101feloss.png}
+		\caption{ResNet101V2 T Feature Extraction Loss}
+		\label{fig:resnet101feloss}
+	\end{subfigure}
+\end{figure}
+
+The network under-fitted our training, performing drastically poorly. The same considerations done in chapter 4.2.1 apply here.
+
+
+\subsubsection{Test 2: Finetuning One Sub-Block}
+As done for ResNet50, we tried to improve our ResNet101 performance using finetuning. In this paragraph we just finetuned the last sub-block of the network.
+
+\medskip
+
+\begin{tabular}{ |p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|  }
+\hline
+\multicolumn{5}{|c|}{Finetuning One Sub-Block} \\
+\hline
+\textbf{Epoch stopped} & \textbf{Validation Accuracy} & \textbf{Testing Accuracy} & \textbf{Validation Loss} & \textbf{Testing Loss} \\
+\hline
+18 & 0.5492 & 0.5218 & 1.7628 & 2.3036\\
+\hline
+\end{tabular}
+
+\begin{figure}[H]
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/resnet101v2/resnet101ft1acc.png} 
+		\caption{ResNet101V2 Test 2 Accuracy}
+		\label{fig:resnet101ft1acc}
+	\end{subfigure}
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/resnet101v2/resnet101feloss.png}
+		\caption{ResNet101V2 Test 2 Loss}
+		\label{fig:resnet101ft1loss}
+	\end{subfigure}
+\end{figure}
+
+As expected, the performance are better compered to test 1. Anyway, the network still do not overfit: finetuning just one sub-block is not enough for a neural network made of 101 layers. 
+
+\subsubsection{Test 3: Finetuning the Entire Block 5}
+Aiming to overfitting, we finetuned the entire block 5, which is made of 3 sub-blocks.
+
+\medskip
+
+\begin{tabular}{ |p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|  }
+\hline
+\multicolumn{5}{|c|}{Finetuning Entire Block 5} \\
+\hline
+\textbf{Epoch stopped} & \textbf{Validation Accuracy} & \textbf{Testing Accuracy} & \textbf{Validation Loss} & \textbf{Testing Loss} \\
+\hline
+15 & 0.5155 & 0.4805 & 1.9216 & 3.4421\\
+\hline
+\end{tabular}
+
+\begin{figure}[H]
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/resnet101v2/resnet101ft_block5_acc.png} 
+		\caption{ResNet101V2 Test 3 Accuracy}
+		\label{fig:resnet101ftblock5acc}
+	\end{subfigure}
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/resnet101v2/resnet101ft_block5_loss.png}
+		\caption{ResNet101V2 Test 3 Loss}
+		\label{fig:resnet101ftblock5loss}
+	\end{subfigure}
+\end{figure}
+
+Unfortunately, we have little less performance and we still not completely overfitting: the training accuracy is less than 0.9, meaning that we are not finetuning enough but we are following the right lead since the training accuracy gain 0.1 point.
+
+
+\subsubsection{Test 4: Finetuning Half Block 4}
+In this paragraph, heavy finetuning is done setting as trainable parameters all of them after \textit{conv4\_block13\_out} for a total of 13 sub-blocks finetuned (i.e., 10 in block 4 and 3 in block 5).
+
+\medskip
+
+\begin{tabular}{ |p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|  }
+\hline
+\multicolumn{5}{|c|}{Finetuning Half Block 4} \\
+\hline
+\textbf{Epoch stopped} & \textbf{Validation Accuracy} & \textbf{Testing Accuracy} & \textbf{Validation Loss} & \textbf{Testing Loss} \\
+\hline
+31 & 0.6114 & 0.5977 & 2.3865 & 2.3642\\
+\hline
+\end{tabular}
+
+\begin{figure}[H]
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/resnet101v2/resnet101ft4acc.png} 
+		\caption{ResNet101V2 Test 4 Accuracy}
+		\label{fig:resnet101ft4acc}
+	\end{subfigure}
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/resnet101v2/resnet101ft4loss.png}
+		\caption{ResNet101V2 Test 4 Loss}
+		\label{fig:resnet101ft4loss}
+	\end{subfigure}
+\end{figure}
+
+Finetuning these many layers helped the network to be more our topic-specific. In fact, the neural network finally overfit properly our training data as the accuracy plot shows, also even the loss is lesser than before. However, even if we improve from the previous test it is not enough if we consider the best result obtained using ResNet50 or VGG16.
+
+
+\subsubsection{Test 5: Test 4 and Dropout}
+In test 4 the network overfitted, even if not much, we try to use dropout to mitigate this problem. This approach can result in two possible outcomes:
+
+\begin{enumerate}
+	\item We perform more or less the same as in test 4: this is the goal of dropout, neutralize neurons but performing the same as before, reducing in this way the number of computations and performing better on the test set.
+	\item We perform worst than test 4: dropout neutralizes too many units, performing worst both on the validation set and the test set. This is a problem, the dropout rate should be reduced or other regularization techniques apply.
+\end{enumerate}
+
+\noindent The results obtained are the following:
+
+\medskip
+
+\begin{tabular}{ |p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|  }
+\hline
+\multicolumn{5}{|c|}{Finetuning Half Block 4 and Dropout} \\
+\hline
+\textbf{Epoch stopped} & \textbf{Validation Accuracy} & \textbf{Testing Accuracy} & \textbf{Validation Loss} & \textbf{Testing Loss} \\
+\hline
+28 & 0.5959 & 0.5356 & 2.2455 & 2.8590\\
+\hline
+\end{tabular}
+
+\begin{figure}[H]
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/resnet101v2/resnet101ft4_drop_acc.png} 
+		\caption{ResNet101V2 Test 5 Accuracy}
+		\label{fig:resnet101ft4dropacc}
+	\end{subfigure}
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/resnet101v2/resnet101ft4_drop_loss.png}
+		\caption{ResNet101V2 Test 5 Loss}
+		\label{fig:resnet101ft4droploss}
+	\end{subfigure}
+\end{figure}
+
+The plots and the table show that the situation this test inclines is the second outcome presented. Even if the validation accuracy losses just 0.2 points, the test accuracy has a gap 0.6 points with the one obtained in test 4, which is a lot considering that the overall performance is not good (it barely arrives to 0.6, which is very low to be considered a good classifier). Hence, for the following test we decided to drop the use of dropout until better performances are met.
 
 
 
+\subsubsection{Test 6: Adding Dense Layers to Test 4}
+Following the tests performed with VGG16 and ResNet50V2, we tried also here to add dense layers at the top of the \textit{GlobalAveragePooling2D} layer.  Doing this experiment, the learning rate of \textit{Adam} is change from the default value (i.e, 0.001) to 0.0001.
+
+\noindent The result obtained are the following:
+
+\medskip
+
+\begin{tabular}{ |p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|  }
+\hline
+\multicolumn{5}{|c|}{Finetuning Half Block 4 and Adding 2 Dense Layers} \\
+\hline
+\textbf{Epoch stopped} & \textbf{Validation Accuracy} & \textbf{Testing Accuracy} & \textbf{Validation Loss} & \textbf{Testing Loss} \\
+\hline
+16 & 0.6062 & 0.4552 & 1.6339 & 3.5964\\
+\hline
+\end{tabular}
+
+\begin{figure}[H]
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/resnet101v2/resnet101ft4denseacc.png} 
+		\caption{ResNet101V2 Test 6 Accuracy}
+		\label{fig:resnet101ft4denseacc}
+	\end{subfigure}
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/resnet101v2/resnet101ft4denseloss.png}
+		\caption{ResNet101V2 Test 6 Loss}
+		\label{fig:resnet101ft4denseloss}
+	\end{subfigure}
+\end{figure}
+
+The introduction of these layers worsen the performance of test 4, but they helped achieving better loss values. Anyway, they had a bad effect on the test accuracy which is now one of the lower values obtained for ResNet101. This can be explained, perhaps, since the network now shrinks in two layers before predicting: layers specialized on the training set. Hence, they ended up discovering features that are not helpful for predicting correctly the test set.
 
 
+\subsubsection{Test 7: Going Deeper and Deeper}
+Since increasing the finetuning level led to better result in the previous tests, we finetuned ResNet101 till \textit{conv3\_block4\_out} including the parameters of all conv4 (i.e., block4). The network in this way has really unbalanced in terms of trainable parameters, most of them were trainable (i.e., about 80\%). Even that, we tested it and what we obtain was a failure, the network didn't learn well an ended up with a tremendous low accuracy. Thus, we decided to limit our going deeper to the \textit{conv4\_block10\_out}: adding three more sub-blocks to the ones tested in test 3 (which is still our current optimum).
+\noindent The result obtained are the following:
+
+\medskip
+
+\begin{tabular}{ |p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|  }
+\hline
+\multicolumn{5}{|c|}{Finetuning till conv4\_block10\_ou} \\
+\hline
+\textbf{Epoch stopped} & \textbf{Validation Accuracy} & \textbf{Testing Accuracy} & \textbf{Validation Loss} & \textbf{Testing Loss} \\
+\hline
+22 & 0.6062 & 0.5310 & 2.1705 & 2.5997\\
+\hline
+\end{tabular}
+
+\begin{figure}[H]
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/resnet101v2/resnet101ftdeeperacc.png} 
+		\caption{ResNet101V2 Test 7 Accuracy}
+		\label{fig:resnet101ftdeeperacc}
+	\end{subfigure}
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/resnet101v2/resnet101ftdeeperloss.png}
+		\caption{ResNet101V2 Test 7 Loss}
+		\label{fig:resnet101ftdeeperloss}
+	\end{subfigure}
+\end{figure}
+
+These results gained the second best position for our ResNet101 tests. Anyway, the performance are still too poor and the computational power required for training is very high (i.e., we have about 30M parameters). It is important to notice that the same result for validation was obtained in test 6, but with a lower score for the test accuracy. This indicates that the point is a pitfall, where our validation gets caught and wherever it moves it finds only worst values.
+Anyway, we have no way to escape it: the accuracy for the training set is curvilinear without frequent zig-zags, thus changing the learning rate of Adam will let to worst or the same result:
+\begin{enumerate}
+\item if we decrease the learning rate we increase the possibility to stop earlier or to fall in the same pitfall;
+\item if we increase the learning rate we will overfit very fast jeopardizing the training.
+\end{enumerate}
 
 
 \subsection{InceptionV3}
