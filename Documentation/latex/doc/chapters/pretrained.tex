@@ -705,12 +705,153 @@ Anyway, we have no way to escape it: the accuracy for the training set is curvil
 
 \subsection{InceptionV3}
 
-\subsubsection{Test 1: Classical ResNet101V2 with 50 classes}
+\subsubsection{Test 1: Classical InceptionV3}
 
-\subsubsection{Test 2: Completely Newly Output Layers Architecture}
 
-\subsubsection{Test 3: Fine Tuning with One Layer}
+\begin{tabular}{ |p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|  }
+\hline
+\multicolumn{5}{|c|}{Feature Extraction} \\
+\hline
+\textbf{Epoch stopped} & \textbf{Validation Accuracy} & \textbf{Testing Accuracy} & \textbf{Validation Loss} & \textbf{Testing Loss} \\
+\hline
+22 & 0.6062 & 0.5310 & 2.1705 & 2.5997\\
+\hline
+\end{tabular}
 
-\subsubsection{Test 4: Fine Tuning with Two Layers}
+\begin{figure}[H]
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/inception/inceptionfeacc.png} 
+		\caption{InceptionV3 Test 1 Accuracy}
+		\label{fig:inceptionfeacc}
+	\end{subfigure}
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/inception/inceptionfeloss.png}
+		\caption{InceptionV3 Test 1 Loss}
+		\label{fig:inceptionfeloss}
+	\end{subfigure}
+\end{figure}
+
+\subsubsection{Test 2: Finetuning 1 Block}
+
+\begin{tabular}{ |p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|  }
+\hline
+\multicolumn{5}{|c|}{Finetuning 1 Block} \\
+\hline
+\textbf{Epoch stopped} & \textbf{Validation Accuracy} & \textbf{Testing Accuracy} & \textbf{Validation Loss} & \textbf{Testing Loss} \\
+\hline
+22 & 0.6062 & 0.5310 & 2.1705 & 2.5997\\
+\hline
+\end{tabular}
+
+\begin{figure}[H]
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/inception/inceptionft1acc.png} 
+		\caption{Inception Test 2 Accuracy}
+		\label{fig:inceptionft1acc}
+	\end{subfigure}
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/inception/inceptionft1loss.png}
+		\caption{Inception Test 2 Loss}
+		\label{fig:inceptionft1loss}
+	\end{subfigure}
+\end{figure}
+
+\subsubsection{Test 3: Finetuning 2 Blocks}
+\begin{tabular}{ |p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|  }
+\hline
+\multicolumn{5}{|c|}{Finetuning 2 Blocks} \\
+\hline
+\textbf{Epoch stopped} & \textbf{Validation Accuracy} & \textbf{Testing Accuracy} & \textbf{Validation Loss} & \textbf{Testing Loss} \\
+\hline
+22 & 0.6062 & 0.5310 & 2.1705 & 2.5997\\
+\hline
+\end{tabular}
+
+\begin{figure}[H]
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/inception/inceptionft2acc.png} 
+		\caption{Inception Test 3 Accuracy}
+		\label{fig:inceptionft2acc}
+	\end{subfigure}
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/inception/inceptionft2loss.png}
+		\caption{Inception Test 3 Loss}
+		\label{fig:inceptionft2loss}
+	\end{subfigure}
+\end{figure}
+
+
+\subsubsection{Test 4: Finetuning 3 Blocks}
+\begin{tabular}{ |p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|  }
+\hline
+\multicolumn{5}{|c|}{Finetuning 3 Blocks} \\
+\hline
+\textbf{Epoch stopped} & \textbf{Validation Accuracy} & \textbf{Testing Accuracy} & \textbf{Validation Loss} & \textbf{Testing Loss} \\
+\hline
+22 & 0.6062 & 0.5310 & 2.1705 & 2.5997\\
+\hline
+\end{tabular}
+
+\begin{figure}[H]
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/inception/inceptionft3acc.png} 
+		\caption{Inception Test 4 Accuracy}
+		\label{fig:inceptionft3acc}
+	\end{subfigure}
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/inception/inceptionft3loss.png}
+		\caption{Inception Test 4 Loss}
+		\label{fig:inceptionft3loss}
+	\end{subfigure}
+\end{figure}
+
+\subsubsection{Test 5: Finetuning 3 Blocks with Dropout}
+\begin{tabular}{ |p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|  }
+\hline
+\multicolumn{5}{|c|}{Finetuning 3 Blocks with Dropout} \\
+\hline
+\textbf{Epoch stopped} & \textbf{Validation Accuracy} & \textbf{Testing Accuracy} & \textbf{Validation Loss} & \textbf{Testing Loss} \\
+\hline
+22 & 0.6062 & 0.5310 & 2.1705 & 2.5997\\
+\hline
+\end{tabular}
+
+\begin{figure}[H]
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/inception/inceptionft3dropacc.png} 
+		\caption{Inception Test 5 Accuracy}
+		\label{fig:inceptionft3dropacc}
+	\end{subfigure}
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/inception/inceptionft3droploss.png}
+		\caption{Inception Test 5 Loss}
+		\label{fig:inceptionft3droploss}
+	\end{subfigure}
+\end{figure}
+
+\subsubsection{Test 6: Finetuning 3 and ExponentialDecay Learning}
+\begin{tabular}{ |p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|  }
+\hline
+\multicolumn{5}{|c|}{Finetuning 3 Blocks and ExponentialDecay Learning } \\
+\hline
+\textbf{Epoch stopped} & \textbf{Validation Accuracy} & \textbf{Testing Accuracy} & \textbf{Validation Loss} & \textbf{Testing Loss} \\
+\hline
+22 & 0.6062 & 0.5310 & 2.1705 & 2.5997\\
+\hline
+\end{tabular}
+
+\begin{figure}[H]
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/inception/inceptionft3expacc.png} 
+		\caption{Inception Test 6 Accuracy}
+		\label{fig:inceptionft3expacc}
+	\end{subfigure}
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width=0.9\linewidth]{img/inception/inceptionft3exploss.png}
+		\caption{Inception Test 6 Loss}
+		\label{fig:inceptionft3exploss}
+	\end{subfigure}
+\end{figure}
+
 
 
