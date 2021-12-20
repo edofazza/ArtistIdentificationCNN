@@ -704,9 +704,28 @@ Anyway, we have no way to escape it: the accuracy for the training set is curvil
 
 
 \subsection{InceptionV3}
+InceptionV3 is a widely-used image recognition model that has been shown to attain greater than 78.1\% accuracy on the ImageNet dataset. The model is the culmination of many ideas developed by multiple researchers over the years. It is based on the original paper: "Rethinking the Inception Architecture for Computer Vision" by Szegedy, et. al.
+
+The model itself is made up of symmetric and asymmetric building blocks, including convolutions, average pooling, max pooling, concats, dropouts, and fully connected layers. Batchnorm is used extensively throughout the model and applied to activation inputs. Loss is computed via softmax.
+
+A high-level diagram of the first model proposed is shown below:
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\textwidth]{img/inception/inceptionv3}
+	\label{fig:inceptionv3}
+	\caption{Inception v3 First Proposal}
+\end{figure}
+
+Anyway, the model presented in figure is different to the one present in \text{Keras}, which at the end of the network has simply a \textit{GlobalAveragePooling} layer and a prediction layer. The model depicted has a more complex output and it make use of an \textit{auxiliary classifier}: training using loss at the end of the network didn't work well since the network is too deep and the gradients don't propagate cleanly. As a hack, the idea of the time was to attach "auxiliary classifiers" at several intermediate points in the network that also try to classify the image and receive loss. All of that just because the network was proposed before \textit{batch normalization}, with batch normalization there is no longer need to use this trick, In fact, the current version of InceptionV3 implemented in Keras uses BatchNorm.
+
+
 
 \subsubsection{Test 1: Classical InceptionV3}
+The base InceptionV3 provided by Keras comes with a GlobalAveragePooling2D and a prediction layer after that. In this test we used the same approach, resizing the prediction layer to the number of classes we have.
 
+\noindent The results obtained after training are (learning rate=0.01, Adam):
+\medskip
 
 \begin{tabular}{ |p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|  }
 \hline
@@ -731,7 +750,16 @@ Anyway, we have no way to escape it: the accuracy for the training set is curvil
 	\end{subfigure}
 \end{figure}
 
+The network under-fitted our training, performing drastically poorly. The same considerations done in chapter 4.2.1 apply here.
+
+
+
 \subsubsection{Test 2: Finetuning 1 Block}
+As done for the previous networks, we finetuned one block at a time, where a block is an inception block.
+
+\noindent The results for finetuning only the last block are (learning rate=0.001, Adam):
+
+\medskip
 
 \begin{tabular}{ |p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|  }
 \hline
@@ -756,7 +784,17 @@ Anyway, we have no way to escape it: the accuracy for the training set is curvil
 	\end{subfigure}
 \end{figure}
 
+As expected, the network finally overfitted and the accuracy of the validation set increased as well. Anyway, the curves in the last epochs have a strange behavior, the validation accuracy and loss suddenly go worst. Perhaps, this is due to the fact that we are overfitting by few epochs at that point and the iteration moves the curves to points that are in the close to an high accuracy, but which features are far different from the one of the validation set.
+
+
+
 \subsubsection{Test 3: Finetuning 2 Blocks}
+Since we want to find first a good number of blocks to set trainable and than optimize it, we continued our test finetuning the last 2 blocks.
+
+\noindent The results obtained are (learning rate=0.001, Adam):
+
+\medskip
+
 \begin{tabular}{ |p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|  }
 \hline
 \multicolumn{5}{|c|}{Finetuning 2 Blocks} \\
@@ -780,8 +818,18 @@ Anyway, we have no way to escape it: the accuracy for the training set is curvil
 	\end{subfigure}
 \end{figure}
 
+The plots are more or less similar to the ones in the previous test, but the validation accuracy is greater by 0.3 points and the test accuracy is less than 0.3 points. As said before, this can be addressed to the fact that the test and validation set can be different to each other in term of style, thus same feature discovered by a feature map can apply correctly to one case and not in the other. Anyway, since we are supposed to know nothing about the test set and our conclusion should only be driven by the result of the validation, the model can be consider an improvement of the one obtained in the previous test.
+
+Also in this case, the accuracy (loss) decreases (increases) suddenly, but the behavior seems here to be alleviated. Thus, suggesting that finetuning more blocks can help preventing this strange behavior.
+
 
 \subsubsection{Test 4: Finetuning 3 Blocks}
+Finetuning till the third last block was our maximum in finetuning this type of network, since finetuning more led to worst performance\footnote{Here not reported, but the code on GitHub provide the possibility to finetune other 2 more layers.}.
+
+\noindent The results obtained are (learning rate=0.0001, Adam):
+
+\medskip
+
 \begin{tabular}{ |p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|  }
 \hline
 \multicolumn{5}{|c|}{Finetuning 3 Blocks} \\
@@ -805,8 +853,17 @@ Anyway, we have no way to escape it: the accuracy for the training set is curvil
 	\end{subfigure}
 \end{figure}
 
+First thing to notice is the absence of the strange behavior underlined in the previous paragraphs, having more parameters to train help our network to discover a better solution. The validation accuracy gained other 0.3 points and the testing accuracy increases a lot reaching 0.59: the model become more precise in understanding the differences between authors, differences that in the testing loss are more concise reading this result.
+
+Anyway, we overfit very fast so we decided to try preventing it using dropout.
+
 
 \subsubsection{Test 5: Finetuning 3 Blocks with Dropout}
+In this test, we added a dropout layer after the \textit{GlobalAveragePooling2D}
+
+\noindent The results obtained are (learning rate=0.0001, Adam):
+
+\medskip
 \begin{tabular}{ |p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|  }
 \hline
 \multicolumn{5}{|c|}{Finetuning 3 Blocks with Dropout} \\
@@ -830,7 +887,13 @@ Anyway, we have no way to escape it: the accuracy for the training set is curvil
 	\end{subfigure}
 \end{figure}
 
-\subsubsection{Test 6: Finetuning 3 Blocks and ExponentialDecay Learning}
+The plots are quite the same of the test without dropout, but we need an additional epoch to stop the training. The dropout effect is very low, this is quite reasonable since the most of units are inside the InceptionV3 architecture. Anyway, by pure luck we achieve our best test accuracy till now, but since, at this point of the study, we care only about the validation accuracy, this result is meaningless.
+
+
+\subsubsection{Test 6: Finetuning 3 Blocks and ExponentialDecay Learning Rate}
+In this test, we perform the same strategy of test 4 (finetuning 3 blocks), but we changed the optimizer learning rate. In order to try different approaches, here we used Adam with a \textit{exponential learning rate decay}, which can be used through the \textbf{ExponentialDecay} class provided by Keras. The constructor takes 3 parameters\footnote{For the others we used the default values}: the initial learning rate, the decay step and the decay rate, which we set to 0.01, 25 and 0.9 respectively. 
+
+\medskip
 \begin{tabular}{ |p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|  }
 \hline
 \multicolumn{5}{|c|}{Finetuning 3 Blocks and ExponentialDecay Learning } \\
@@ -853,5 +916,9 @@ Anyway, we have no way to escape it: the accuracy for the training set is curvil
 		\label{fig:inceptionft3exploss}
 	\end{subfigure}
 \end{figure}
+
+It is important to notice that this method led us to reach high accuracy values on the training very quickly, but at the same time increasing the validation accuracy rapidly, and then stabilizing and growing slightly (almost imperceptibly looking at the plot), leading to improve more and more the accuracy obtaining the reported value. Moreover, we have a very high value for the test set as well, making this model the best obtained for InceptionV3.
+
+An important thing to take into consideration is the behavior of the loss, which appears here much higher than in the fourth test, this can be explained perhaps by a different direction that our system takes in the search for convergence.
 
 
