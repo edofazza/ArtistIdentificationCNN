@@ -39,7 +39,7 @@ A common way to mitigate overfitting is to put constraints on the complexity of 
 \subsection{Dropout}
 Dropout is one of the most effective and most commonly used regularization techniques for neural networks; it was developed by Geoff Hinton and his students at the University of Toronto. Dropout, applied to a layer, consists of randomly dropping out (setting to zero) a number of output features of the layer during training.
 
-In \textbf{keras} can be set using the \textit{layers.Dropout} function passing as parameter the \textit{dropout rate}, in our case always 0.5.
+In \textbf{keras} can be set using the \textit{layers.Dropout} function passing as parameter the \textit{dropout rate}. We tried different values for the dropout rate during our studies, anyway for the \textit{Pre-Trained Models} chapters it is always set to 0.5 if not otherwise specified.
 
 \subsection{Activation Functions}
 In the studies done in the following chapters we used three different activation functions:
@@ -47,13 +47,13 @@ In the studies done in the following chapters we used three different activation
 	\item \textit{ReLU}: 
 	$ \max (0,x) $
 	\item \textit{ELU}: $ \max (0.2x,x) $
-	\item \textit{Leaky ReLU}: 
-	$ 
-		f(x) = \begin{cases}
-		x \ \ \ \ \ \ \ \ \ \ \ x>0 \\
-		\alpha(\exp(x) -1) \ \ \ \ \ x\le0
-		\end{cases}
-	$
+%	\item \textit{Leaky ReLU}: 
+%	$ 
+%		f(x) = \begin{cases}
+%		x \ \ \ \ \ \ \ \ \ \ \ x>0 \\
+%		\alpha(\exp(x) -1) \ \ \ \ \ x\le0
+%		\end{cases}
+%	$
 \end{itemize}
 They will be useful in the genetic algorithm analysis done fore the \textit{scratch architecture} and the \textit{VGG16}
 
@@ -85,7 +85,7 @@ All of these components are implemented using the python library \textbf{deap}\f
 \subsubsection{Genotype}
 The \textit{genotype} is a collection of genes that are grouped into chromosomes. In our specific case, our genes are bounded real-valued encoded and they represent three different parameters:
 \begin{itemize}
-\item \textit{activation\_function}: bounded between 0, 1.999, 2.999. The integer part stands for ReLU (0), ELU (1), Leaky Relu (2);
+\item \textit{activation\_function}: bounded between 0 and 1.999. The integer part stands for ReLU (0) and ELU (1);
 \item \textit{optimizer}: bounded between 0 and 1.999. The integer part stands for rmsprop (0) and adam (1);
 \item \textit{learning rate}: bounded between 0.001 and 0.1.
 \end{itemize}
