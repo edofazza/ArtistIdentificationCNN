@@ -292,10 +292,58 @@ Even if the increase the flexibility of our network finetuning more layers, as h
 
 
 \subsubsection{Test 8: Genetic Algorithm for Hyper-parameters and Architecture Optimization}
+Following the elements presented in chapter 2.6 regarding the components of genetic algorithms, we here introduce the specific cases used here.
+\paragraph{Genotype}
+In our specific case, our genes are bounded real-valued encoded and they represent three different parameters:
+\begin{itemize}
+\item \textit{activation\_function}: bounded between 0 and 1.999. The integer part stands for ReLU (0) and ELU (1);
+\item \textit{optimizer}: bounded between 0 and 1.999. The integer part stands for rmsprop (0) and adam (1);
+\item \textit{learning rate}: bounded between 0.001 and 0.1.
+\end{itemize}
+
+\paragraph{Population}
+Since for each individual we train a model and evaluate its performance, we decided to use only 5 individuals per generation to limit the computation.
+
+\paragraph{Fitness Function}
+In our problem, the fitness function is the the function which calculate the maximum validation accuracy reached by the model. Our objective is maximizing the validation accuracy.
+
+\paragraph{Selection Algorithm}
+The selection algorithm used in this case is \textit{tournament selection}. In each round of the tournament selection method, two individuals are randomly picked from the population, and the one with the highest fitness score wins and gets selected. We decided to select only two individuals since our population is small and selecting more could cause an abuse in exploitation.
+
+\paragraph{Crossover Algorithm}
+There are multiple algorithms applicable to real-value encoded individuals, we decided to use the \textit{Simulated Binary Bounded Crossover}, which is a bounded version of the Simulated Binary Crossover (SBX)\footnote{https://content.wolfram.com/uploads/sites/13/2018/02/09-2-2.pdf}.
+
+The idea behind the simulated binary crossover is to imitate the properties of the single-point crossover that is commonly used with binary-coded chromosomes. One of these properties is that the average of the parents' values is equal to that of the offsprings' values.
+When applying SBX, the two offspring are created from the two parents using the following formula:
+
+$
+	offspring_1 = \frac{1}{2}[(1+\beta)parent_1 + (1-\beta)parent_2] 
+$
+\medskip
+
+$
+	offspring_2 = \frac{1}{2}[(1-\beta)parent_1 + (1+\beta)parent_2]
+$
 
 
+\noindent Here, $\beta$ is a random number referred to as the \textit{spread factor}.
 
+\noindent This formula has the following notable properties:
+\begin{itemize}
+\item The average of the two offspring is equal to that of the parents, regardless of the value of $\beta$.
+\item When the $\beta$ value is 1, the offspring are duplicates of the parents.
+\item When the $\beta$ value is smaller than 1, the offspring are closer to each other than the parents were.
+\item When the $\beta$ value is larger than 1, the offspring are farther apart from each other than the parents were.
+\end{itemize}
 
+\noindent The probability to mate is set equal to 0.9\footnote{Value suggested by the book "Hands on Genetic Algorithms with Python" by Eyal Wirsansky, also the other values of probabilities are taken by the suggestions of the book}.
+
+\paragraph{Mutation Algorithm}
+As mutation algorithm we decided to use the \textit{Polynomial Bounded} method, which is a bounded mutation operator that uses a polynomial function for the probability distribution.
+\noindent The probability to mutate is set equal to 0.5.
+
+\paragraph{Elitism}
+We set the number of individuals for the elitism mechanism to 1 since our population is only made by 5 individuals. Anyway, to speed up even more the computation of the algorithm we introduced a system that saves the results of individuals already seen, in this way we do not need to recompute the accuracy again for those individuals.
 
 \subsection{ResNet50V2}
 ResNet stands for Residual Network. It is an innovative neural network that was first introduced by Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun in their 2015 computer vision research paper titled "Deep Residual Learning for Image Recognition". This model was immensely successful, as can be ascertained from the fact that its ensemble won the top position at the ILSVRC 2015 classification competition with an error of only 3.57\%. Additionally, it also came first in the ImageNet detection, ImageNet localization, COCO detection, and COCO segmentation in the ILSVRC \& COCO competitions of 2015.

@@ -72,72 +72,19 @@ An optimizer is the mechanism through which the model will update itself based o
 Genetic algorithms are a family of search algorithms inspired by the principles of evolution in nature. By imitating the process of natural selection and reproduction, genetic algorithms can produce high-quality solutions for various problems involving search, optimization, and learning. At the same time, their analogy to natural evolution allows genetic algorithms to overcome some of the hurdles that are encountered by traditional search and optimization algorithms, especially for problems with a large number of parameters and complex mathematical representations. Thus, they come in handy for optimizing our networks.
 In order to make use of genetic algorithms we must decide some components, which are:
 \begin{itemize}
-\item Genotype
-\item Population
-\item Fitness Function
-\item Selection Algorithm
-\item Crossover Algorithm
-\item Mutation Algorithm
-\item Elitism
+\item \textit{Genotype}: the \textit{genotype} is a collection of genes that are grouped into chromosomes. 
+\item \textit{Population}: at any point in time, genetic algorithms maintain a population of individuals (i.e., chromosomes)– a collection of candidate solutions for the problem at hand.
+\item \textit{Fitness Function}: at each iteration of the algorithm, the individuals are evaluated using a fitness function (also called the target function). This is the function we seek to optimize or the problem we attempt to solve.
+\item \textit{Selection Algorithm}: after calculating the fitness of every individual in the population, a selection process is used to determine which of the individuals in the population will get to reproduce and create the offspring that will form the next generation.
+\item \textit{Crossover Algorithm}: to create a pair of new individuals, two parents are chosen from the current generation, and parts of their chromosomes are interchanged (crossed over) to create two new chromosomes representing the offspring. 
+\item \textit{Mutation Algorithm}: the purpose of the mutation operator is to periodically and randomly refresh the population, introduce new patterns into the chromosomes, and encourage search in uncharted areas of the solution space.
+\item \textit{Elitism}: described in the following paragraph.
 \end{itemize}
 All of these components are implemented using the python library \textbf{deap}\footnote{https://deap.readthedocs.io/en/master/}.
-
-\subsubsection{Genotype}
-The \textit{genotype} is a collection of genes that are grouped into chromosomes. In our specific case, our genes are bounded real-valued encoded and they represent three different parameters:
-\begin{itemize}
-\item \textit{activation\_function}: bounded between 0 and 1.999. The integer part stands for ReLU (0) and ELU (1);
-\item \textit{optimizer}: bounded between 0 and 1.999. The integer part stands for rmsprop (0) and adam (1);
-\item \textit{learning rate}: bounded between 0.001 and 0.1.
-\end{itemize}
-
-\subsubsection{Population}
-At any point in time, genetic algorithms maintain a population of individuals (i.e., chromosomes)– a collection of candidate solutions for the problem at hand. Since for each individual we train a model and evaluate its performance, we decided to use only 20 individuals per generation to limit the computation.
-
-\subsubsection{Fitness Function}
-At each iteration of the algorithm, the individuals are evaluated using a fitness function (also called the target function). This is the function we seek to optimize or the problem we attempt to solve.
-In our problem, the fitness function is the the function which calculate the maximum validation accuracy reached by the model. Our objective is maximizing the validation accuracy.
-
-\subsubsection{Selection Algorithm}
-After calculating the fitness of every individual in the population, a selection process is used to determine which of the individuals in the population will get to reproduce and create the offspring that will form the next generation.
-The selection algorithm used by as is \textit{tournament selection}. In each round of the tournament selection method, two individuals are randomly picked from the population, and the one with the highest fitness score wins and gets selected. We decided to select only two individuals since our population is small and selecting more could cause an abuse in exploitation.
-
-\subsubsection{Crossover Algorithm}
-To create a pair of new individuals, two parents are chosen from the current generation, and parts of their chromosomes are interchanged (crossed over) to create two new chromosomes representing the offspring. There exists different algorithms applicable to real-value encoded individuals, we decided to use the \textit{Simulated Binary Bounded Crossover}, which is a bounded version of the Simulated Binary Crossover (SBX)\footnote{https://content.wolfram.com/uploads/sites/13/2018/02/09-2-2.pdf}.
-
-The idea behind the simulated binary crossover is to imitate the properties of the single-point crossover that is commonly used with binary-coded chromosomes. One of these properties is that the average of the parents' values is equal to that of the offsprings' values.
-When applying SBX, the two offspring are created from the two parents using the following formula:
-
-$
-	offspring_1 = \frac{1}{2}[(1+\beta)parent_1 + (1-\beta)parent_2] 
-$
-\medskip
-
-$
-	offspring_2 = \frac{1}{2}[(1-\beta)parent_1 + (1+\beta)parent_2]
-$
-
-
-\noindent Here, $\beta$ is a random number referred to as the \textit{spread factor}.
-
-\noindent This formula has the following notable properties:
-\begin{itemize}
-\item The average of the two offspring is equal to that of the parents, regardless of the value of $\beta$.
-\item When the $\beta$ value is 1, the offspring are duplicates of the parents.
-\item When the $\beta$ value is smaller than 1, the offspring are closer to each other than the parents were.
-\item When the $\beta$ value is larger than 1, the offspring are farther apart from each other than the parents were.
-\end{itemize}
-
-\noindent The probability to mate is set equal to 0.9.
-
-\subsubsection{Mutation Algorithm}
-The purpose of the mutation operator is to periodically and randomly refresh the population, introduce new patterns into the chromosomes, and encourage search in uncharted areas of the solution space.
-As mutation algorithm we decided to use the \textit{Polynomial Bounded} method, which is a bounded mutation operator that uses a polynomial function for the probability distribution.
-
-\noindent The probability to mutate is set equal to 0.5.
 
 \subsubsection{Elitism}
 While the average fitness of the genetic algorithm population generally increases as generations go by, it is possible at any point that the best individual(s) of the current generation will be lost. This is due to the selection, crossover, and mutation operators altering the individuals in the process of creating the next generation. In many cases, the loss is temporary as these individuals (or better individuals) will be re-introduced into the population in a future generation.
 
-However, if we want to guarantee that the best individual(s) always make it to the next generation, we can apply the optional elitism strategy. This means that the top \textit{n} individuals (\textit{n} being a small, predefined parameter, in our case 5) are duplicated into the next generation before we fill the rest of the available spots with offspring that are created using selection, crossover, and mutation. The elite individuals that were duplicated are still eligible for the selection process so they can still be used as the parents of new individuals.
+However, if we want to guarantee that the best individual(s) always make it to the next generation, we can apply the optional elitism strategy. This means that the top \textit{n} individuals (\textit{n} being a small, predefined parameter) are duplicated into the next generation before we fill the rest of the available spots with offspring that are created using selection, crossover, and mutation. The elite individuals that were duplicated are still eligible for the selection process so they can still be used as the parents of new individuals.
 
 Elitism is made possible in our code thanks to the function \textit{eaSimpleWithElitism}, which is a modification of the function \textit{eaSimple} present in the \textbf{Deap} framework.
