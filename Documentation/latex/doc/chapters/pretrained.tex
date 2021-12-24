@@ -345,6 +345,9 @@ As mutation algorithm we decided to use the \textit{Polynomial Bounded} method, 
 \paragraph{Elitism}
 We set the number of individuals for the elitism mechanism to 1 since our population is only made by 5 individuals. Anyway, to speed up even more the computation of the algorithm we introduced a system that saves the results of individuals already seen, in this way we do not need to recompute the accuracy again for those individuals.
 
+\paragraph{Results}
+Even if the code was uploaded on the directory, we was unable to run it till completion due to the limitations of Colab. In fact, even the strong limitation we made on the population, for each epoch the algorithm takes about 40 minutes (since all the first epochs are done at the same time, due to the parallelism introduced by \textit{deap}), thus producing the final result (i.e., the result at the end of the last generation) after few tens of hours\footnote{Consider 40 minutes per epoch and an average of 18 epochs, we get that we need 720 minutes for training a generation, since we have 5 generations, the computation end after approximately 3600 minutes, which are 60 hours.}.
+
 \subsection{ResNet50V2}
 ResNet stands for Residual Network. It is an innovative neural network that was first introduced by Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun in their 2015 computer vision research paper titled "Deep Residual Learning for Image Recognition". This model was immensely successful, as can be ascertained from the fact that its ensemble won the top position at the ILSVRC 2015 classification competition with an error of only 3.57\%. Additionally, it also came first in the ImageNet detection, ImageNet localization, COCO detection, and COCO segmentation in the ILSVRC \& COCO competitions of 2015.
 
