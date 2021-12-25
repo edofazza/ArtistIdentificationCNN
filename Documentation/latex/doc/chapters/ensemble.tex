@@ -100,6 +100,9 @@ class Ensemble:
 
     def labels_len(self):
         return len(self.labels)
+        
+    def models_len(self):
+        return len(self.model_list)
 \end{python}
 
 The \textit{constructor} takes in input 3 datasets that are equal to each other except for the size of the images, in fact VGG, ResNet and Inception want in input images with size (256,256), (224, 244) and (299,299) respectively: this is done in order to correctly evaluate the models without having errors due to the input data. The constructor also computes the labels of each test sample, loads the models and computes the predictions for each of them, this is done to speed up the execution of the genetic algorithm.
@@ -215,7 +218,7 @@ hof = tools.HallOfFame(HALL_OF_FAME_SIZE)
 The main flow is done using the \textit{eaSimple} in the way as follow:
 
 \begin{python}
-population, logbook = algorithms.eaSimple(population,
+population, logbook = eaSimpleWithElitism(population,
 								  toolbox,
 								  cxpb=P_CROSSOVER,
 								  mutpb=P_MUTATION,
