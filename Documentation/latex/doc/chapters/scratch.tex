@@ -25,13 +25,13 @@ The first experiment has been conducted using a customized standard CNN that exp
 \noindent This model is trained using these default hyperparameters:
 \begin{itemize}
 \item optimizer: \textit{ADAM}
-\item dropout rate :0.0
+\item dropout rate: 0.0
 \item learning rate: optimizer's default
 \item batch size: 128
 \item learning rate decay: none
 \end{itemize}
 
-\noindent In particular, we set a large value for batch size both because our main goal is to maximize the accuracy and also (as presented in the Introduction) to face off with the great variability of paintings with very dissimilar style but belonging to the same author. In this way, we increase the probability of a batch to be "complete", thus being representative of this variability.
+\noindent In particular, we set a large value for batch size both because our main goal is to maximize the accuracy and also (as presented in the \textit{Introduction}) to face off with the great variability of paintings with very dissimilar style but belonging to the same author. In this way, we increase the probability of a batch to be "complete", thus being representative of this variability.
 
 \noindent The results obtained are the following:
 
@@ -74,8 +74,8 @@ The first experiment has been conducted using a customized standard CNN that exp
 
 \subsubsection{Deeper network and dropout}
 The highlighted problem can be tackled exploiting a deeper architecture, in which we add more convolutional layers in order to reduce the spatial extent of the extracted features, together with the reduction of parameters and the further processing applied to the original image: in this way we expect the network to have higher capacity and to need more epochs to overfit, thus incrementing accuracy.
-To better process the feature vector, we also added a 32-neurons Fully-Connected layer, right before the Softmax classifier. In order to avoid overfitting that could be caused by those additional parameters we introduce Dropout regularization to the latter layer.   
-The final resulting network is the one reported in the figure below.\ref{fig: DeeperDropout}
+To better process the feature vector, we also added a 32-neurons \textit{Fully-Connected }layer, right before the \textit{Softmax} classifier. In order to avoid overfitting that could be caused by those additional parameters we introduce \textit{Dropout} regularization to the latter layer.   
+The final resulting network is the one reported in the figure below\ref{fig: DeeperDropout}.
 
 \begin{figure}[H]
 	\centering
@@ -84,7 +84,7 @@ The final resulting network is the one reported in the figure below.\ref{fig: De
 	\label{fig: DeeperDropout}
 \end{figure}
 
-\noindent Again we train the network for at least 15 epochs. To optimize the training process, we actually tune dynamically the number of epochs and we save the history of the training itself. In this way we can interrupt and restart the learning phase, visualize the intermediate results and save in an external file the model that, during training, achieved best validation accuracy. Whenever possible, we train the network till the convergence of training loss, thus visualizing when and how fast the model started to overfit and trying to understand what can be the causes.
+\noindent Again, we train the network for at least 15 epochs. To optimize the training process, we actually tune dynamically the number of epochs and we save the history of the training itself. In this way we can interrupt and restart the learning phase, visualize the intermediate results and save in an external file the model that, during training, achieved best validation accuracy. Whenever possible, we train the network till the convergence of training loss, thus visualizing when and how fast the model started to overfit and trying to understand what can be the causes.
 
 \noindent The results obtained are the following:
 
@@ -118,21 +118,21 @@ The final resulting network is the one reported in the figure below.\ref{fig: De
 
 \medskip
 
-\noindent Analyzing these graphs, we realize that the validation accuracy is actually improved, and also test accuracy and loss are coherent with validation ones. The increased network capacity improved its ability to generalize, but we now have a problem, that is the model couldn't converge (not shown in the graphs above), starting to oscillate once reached 1.2 of training loss. We can argue that is due a too high learning rate value, but we actually use ADAM as optimizer which is able to dynamically tune it to proceed with learning. Thus the cause could be the underfitting: since we deepened the network, we are providing the few dense neurons with a feature vectors whose variability is now much bigger then before as result of the further processing. The phenomen is exacerbated by the Dropout, that reduces Fully-Connected capacity by 20\% at each epoch. If we could train further, we might have found a model that also improves validation accuracy.
+\noindent Analyzing these graphs, we realize that the validation accuracy is actually improved, and also test accuracy and loss are coherent with validation ones. The increased network capacity improved its ability to generalize, but we now have a problem, that is the model couldn't converge (not shown in the graphs above), starting to oscillate once reached 1.2 of training loss. We can argue that is due a too high learning rate value, but we actually use ADAM as optimizer which is able to dynamically tune it to proceed with learning. Thus the cause could be the underfitting: since we deepened the network, we are providing the few dense neurons with a feature vectors whose variability is now much bigger than before as result of the further processing. The phenomenon is exacerbated by the Dropout, that reduces Fully-Connected capacity by 20\% at each epoch. If we could train further, we might have found a model that also improves validation accuracy.
 
 
 
 \subsubsection{Bigger Network and Early Stopping}
-If the problem is the overfitting, we can try to go further and increase network dimensions at FC layers. With this experiment we apply that, expecting to see our network to converge. If our hypotesis is correct, we expect the accuracy value to be more or less the same or at least to increase, while if it is not, we expect the validation loss to diverge quickly. The network we are going to test is the following\ref{fig: BiggerCNN}
+If the problem is the overfitting, we can try to go further and increase network dimensions at FC layers. With this experiment we apply that, expecting to see our network to converge. If our hypothesis is correct, we expect the accuracy value to be more or less the same or at least to increase, while if it is not, we expect the validation loss to diverge quickly. The network we are going to test is the following\ref{fig:BiggerCNN}:
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[height=0.6\textwidth]{img/scratch/BiggerCNN.jpg}
+	\includegraphics[height=0.5\textwidth]{img/scratch/BiggerCNN.jpg}
 	\caption{Customized architecture with bigger FC layers}
-	\label{fig: BiggerCNN}
+	\label{fig:BiggerCNN}
 \end{figure}
 
-\noindent This time we introduced the Early Stopping to the training process: Early Stopping is a mechanism offered by Keras among the possible callbacks, that consist on halting the training process if some condition is fired. In our case we monitor the validation loss (not the accuracy, the primer is more robust since it takes into account also class weights and how much a network is confident on its classification, while the latter only considers the number of correctly classified samples), whenever the model does not improve it for a certain number of epochs (patience value), training process is stopped. Thanks to the previously explained mechanism, we are still able to resume it manually if we believe that the validation values may actually improve.
+\noindent This time we introduced the \textit{Early Stopping} to the training process: Early Stopping is a mechanism offered by Keras among the possible callbacks, that consist on halting the training process if some condition is fired. In our case we monitor the validation loss (not the accuracy, the primer is more robust since it takes into account also class weights and how much a network is confident on its classification, while the latter only considers the number of correctly classified samples), whenever the model does not improve it for a certain number of epochs (patience value), training process is stopped. Thanks to the previously explained mechanism, we are still able to resume it manually if we believe that the validation values may actually improve.
 
 \noindent The outcome of the learning is the following:
 
@@ -166,11 +166,11 @@ If the problem is the overfitting, we can try to go further and increase network
 
 \medskip
 
-\noindent Accuracy and loss are actually improved, and the convergence problem is now solved. Increasing capacity but equipping the network with the Dropout regularization allowed it to increase its learning power, but avoiding neurons to overspecialize themselves, and this had a benefitial effect on the architecture.
+\noindent Accuracy and loss are actually improved, and the convergence problem is now solved. Increasing capacity but equipping the network with the Dropout regularization allowed it to increase its learning power, but avoiding neurons to overspecialize themselves, and this had a beneficial effect on the architecture.
 obtain the 
 \subsubsection{Batch Normalization}
 The previous model showed quite good results, however we wonder if we can improve it. For this purpose we try to use the \textit{Batch Normalization}.
-Batch Normalization is a techniques that is frequently used to make the training process more stable, usually gaining also better accuracies especially on very big and deep networks. Batch normalization is not formally proved, but the idea is quite simple: given a batch of input training samples, we subtract each by their mean and divide them by their standard deviation, thus obtaining a Gaussian distribution of the inputs. To give an oversamplified view of the intuition, given a 2d linearly-separable dataset and a linear activation, to find the best dividing straight is much easier if all the points are near the origin rather than if they are far away: the found line will be much more robust. Batch Normalization tries to apply such trasformation to all the samples of each batch, and it's usually exploited right before the non-linear activation (ReLU in our case). At test time, BN parameters are not computed on the test batch, but the average training ones are used. Taking as base the previous network (Bigger CNN), which is the one that performed best so far, and adding the Batch Normalization layers we obtain the following architecture:\ref{fig: BatchNormalizationCNN}
+Batch Normalization is a techniques that is frequently used to make the training process more stable, usually gaining also better accuracies especially on very big and deep networks. Batch normalization is not formally proved, but the idea is quite simple: given a batch of input training samples, we subtract each by their mean and divide them by their standard deviation, thus obtaining a Gaussian distribution of the inputs. To give an oversimplified view of the intuition, given a 2d linearly-separable dataset and a linear activation, to find the best dividing straight is much easier if all the points are near the origin rather than if they are far away: the found line will be much more robust. Batch Normalization tries to apply such transformation to all the samples of each batch, and it's usually exploited right before the non-linear activation (ReLU in our case). At test time, BN parameters are not computed on the test batch, but the average training ones are used. Taking as base the previous network (Bigger CNN), which is the one that performed best so far, and adding the Batch Normalization layers we obtain the following architecture:\ref{fig: BatchNormalizationCNN}
 
 \begin{figure}[H]
 	\centering
@@ -217,8 +217,7 @@ Batch Normalization is a techniques that is frequently used to make the training
 
 
 \subsubsection{Data Augmentation}
-Last experiment conducted on standard CNNs exploits Data Augmentation. Data Augmentation is a techinique that consists on artificially expanding labeled training dataset by applying affine transformation or elastic deformations \footnote{PEREZ, Luis; WANG, Jason. The effectiveness of data augmentation in image classification using deep learning. arXiv preprint arXiv:1712.04621, 2017.} The idea is to try to increase accuracy by reducing more the overfitting, and it could be particulary suitable in our case where we have a very small dataset with several classes. In the following, we apply data augemntation to the model that performed best so far (paragraph 3.1.3).
-\ref{fig: DataAugmentationStandardCNN}
+Last experiment conducted on standard CNNs exploits Data Augmentation. Data Augmentation is a techinique that consists on artificially expanding labeled training dataset by applying affine transformation or elastic deformations\footnote{PEREZ, Luis; WANG, Jason. The effectiveness of data augmentation in image classification using deep learning. arXiv preprint arXiv:1712.04621, 2017.}. The idea is to try to increase accuracy by reducing more the overfitting, and it could be particularly suitable in our case where we have a very small dataset with several classes. In the following, we apply data augmentation to the model that performed best so far (paragraph 3.1.3)\ref{fig: DataAugmentationStandardCNN}.
 
 \begin{figure}[H]
 	\centering
@@ -259,9 +258,9 @@ Last experiment conducted on standard CNNs exploits Data Augmentation. Data Augm
 
 \medskip
 
-\noindent The training process is very very noisy and the model severely underfits. The noise can be explained by the high randomicity amount that has been inserted in the learning process, both due to droupout and the random transformations of data augmentation itself.
+\noindent The training process is very very noisy and the model severely underfits. The noise can be explained by the high randomness amount that has been inserted in the learning process, both due to droupout and the random transformations of data augmentation itself.
 The underfitting was actually predictable: data augmentation is used mainly to contrast overfitting, but the 3.1.3 model actually overfitted very late.
-The only solution would be the training of a larger, deeper network, thus increasing parameters that can be trained and reducing overfitting: we tryed such approach and it was actually promising, however due to Colab limitations it was impossible to train such a big model from scratch.
+The only solution would be the training of a larger, deeper network, thus increasing parameters that can be trained and reducing overfitting: we tried such approach and it was actually promising, however due to Colab limitations it was impossible to train such a big model from scratch.
 
 
 \subsection{Aggressive Downsampling}
@@ -269,7 +268,7 @@ Aggressive Downsampling consists on designing a Convolutional neural network suc
 
 \subsubsection{Standard CNN with aggressive downsampling}
 In this paragraph we analyze a model very similar to the 3.1.1 one, but it exploits aggressive downsampling. Thanks to that, the network is deeper but also has less parameters than the standard model, for sure reducing overtraining.
-The architecture is the following: \ref{fig: AggressiveDownsamplingCNN}
+The architecture is the following\ref{fig: AggressiveDownsamplingCNN}:
 
 \begin{figure}[H]
 	\centering
@@ -310,18 +309,18 @@ The architecture is the following: \ref{fig: AggressiveDownsamplingCNN}
 
 \medskip
 
-\noindent The choice of aggressive downsampling has sensational effects on the classification power of the network: with very few GPU memory consumed, this model outperforms the 3.1.1 one, especially on validation accuracy and loss. Since the test results of the standard CNN model were not reliable, we cannot compare them, but with respect to the other models presented in the section 3.1, this network has similar accuracy and better loss. The only problem came up around iteration 30: the network cannot converge but starts oscillating around the loss value of 0.5, also training accuracy oscillates while validation loss is stucked around 1.2.
-The first hypotesis could be that the learning rate is too large in that training phase, but we used as optimizer Adam which computes individual adaptive learning rates for different parameters from estimates of first and second moments of the gradients, and its convergence is proved\footnote{KINGMA, Diederik P.; BA, Jimmy. Adam: A method for stochastic optimization. arXiv preprint arXiv:1412.6980, 2014.}, so the only possibility is that the network has too few parameters to learn all the train samples. In the following experiment we try to increase the network size to face such problem.
+\noindent The choice of aggressive downsampling has sensational effects on the classification power of the network: with very few GPU memory consumed, this model outperforms the 3.1.1 one, especially on validation accuracy and loss. Since the test results of the standard CNN model were not reliable, we cannot compare them, but with respect to the other models presented in the section 3.1, this network has similar accuracy and better loss. The only problem came up around iteration 30: the network cannot converge but starts oscillating around the loss value of 0.5, also training accuracy oscillates while validation loss is stuck around 1.2.
+The first hypothesis could be that the learning rate is too large in that training phase, but we used as optimizer Adam which computes individual adaptive learning rates for different parameters from estimates of first and second moments of the gradients, and its convergence is proved\footnote{KINGMA, Diederik P.; BA, Jimmy. Adam: A method for stochastic optimization. arXiv preprint arXiv:1412.6980, 2014.}, so the only possibility is that the network has too few parameters to learn all the train samples. In the following experiment we try to increase the network size to face such problem.
 
 
 \subsubsection{Bigger CNN with aggressive downsampling}
-As anticipated in the previous paragraph, in this experiment we test a bigger Convoultional NN that exploits aggressive downsampling, trying to solve the problem of missing convergence. Note that , even if the problem will be solved, it might not involve that validation and test accuracy will increase. The architecture is the following: \ref{fig: BiggerAggressiveDownsamplingCNN}
+As anticipated in the previous paragraph, in this experiment we test a bigger Convolutional NN that exploits aggressive downsampling, trying to solve the problem of missing convergence. Note that , even if the problem will be solved, it might not involve that validation and test accuracy will increase. The architecture is the following\ref{fig:BiggerAggressiveDownsamplingCNN}:
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[height=0.6\textwidth]{img/scratch/bigger_aggressive_downsampling.jpg}
 	\caption{Bigger CNN architecture with aggressive downsampling}
-	\label{fig: BiggerAggressiveDownsamplingCNN}
+	\label{fig:BiggerAggressiveDownsamplingCNN}
 \end{figure}
 
 \noindent Number of parameters is much higher, almost 1 million. The training results are: 
@@ -359,13 +358,13 @@ As anticipated in the previous paragraph, in this experiment we test a bigger Co
 \noindent Increasing parameters actually helped the network to reach convergence, and it showed comparable results on the validation test and great results on test set. However, as discussed in 3.1.1, it is very likely that with this random seed training and test set are quite more similar than training and validation ones, so the test accuracy could be inflated by this fact.
 
 \subsubsection{Bigger CNN with aggressive downsampling and data augmentation}
-Despite the previous results, the grphs are still characteristics of overfitting: the best validation values where reached quite soon, and then they deteriorate quickly while the training loss continues to decrease. In this experiment we wil try to fight overfitting introducing again data augmentation: \ref{fig: dataAugmentedAggressiveDownsamplingCNN}
+Despite the previous results, the graphs are still characteristics of overfitting: the best validation values where reached quite soon, and then they deteriorate quickly while the training loss continues to decrease. In this experiment we will try to fight overfitting introducing again data augmentation\ref{fig:dataAugmentedAggressiveDownsamplingCNN}:
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[height=0.6\textwidth]{img/scratch/DataAugmentedAggressiveDownsamplingCNN.jpg}
+	\includegraphics[height=0.2\textwidth]{img/scratch/DataAugmentedAggressiveDownsamplingCNN.jpg}
 	\caption{Bigger CNN architecture with aggressive downsampling and data augmentation}
-	\label{fig: DataAugmentedAggressiveDownsamplingCNN}
+	\label{fig:dataAugmentedAggressiveDownsamplingCNN}
 \end{figure}
 
 \medskip
@@ -404,18 +403,18 @@ Despite the previous results, the grphs are still characteristics of overfitting
 
 
 \subsection{Inception Blocks}
-Inception modules are special convolutional blocks in which we do not define just one layer, but we concatenate more layers with different kernel sizes, together with a max pooling. The idea is that choosing which specific filter to use at each convolutional layer is an hyper-parameter, so it can be source of losses of performance. On the contrary, horizzontally concatenating such layers we let the network "learn and decide" which one to use in order to minimize its training loss. Google started exploiting inception modules from GoogleNet(2014), and a finer version of them is present in the modern Inceptionv3 and Inceptionv4. In this section, we try to design and train a Convolutional Neural network equipped with Inception Layers, and we are going to measure its accuracy. 
+Inception modules are special convolutional blocks in which we do not define just one layer, but we concatenate more layers with different kernel sizes, together with a max pooling. The idea is that choosing which specific filter to use at each convolutional layer is an hyper-parameter, so it can be source of losses of performance. On the contrary, horizontally concatenating such layers we let the network "learn and decide" which one to use in order to minimize its training loss. Google started exploiting inception modules from GoogleNet(2014), and a finer version of them is present in the modern Inceptionv3 and Inceptionv4. In this section, we try to design and train a Convolutional Neural network equipped with Inception Layers, and we are going to measure its accuracy. 
 
 \subsubsection{Standard CNN with Inception Layers}
 In this paragraph we build a model like the 3.2.1 one, but that also exploits inception modules (in addition with aggressive downsampling). At every module, the network can decide if to use a 3x3 or 5x5 convolution, or a 3x3 max-pooling with stride 1.
-The architecture is the following: \ref{fig: InceptionlayersCNN}
+The architecture is the following:
 
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[height=0.6\textwidth]{img/scratch/inception_layers.jpg}
 	\caption{CNN architecture with Inception Layers}
-	\label{fig: InceptionLayersCNN}
+	\label{fig:InceptionLayersCNN}
 \end{figure}
 
 \medskip
@@ -452,7 +451,7 @@ The architecture is the following: \ref{fig: InceptionlayersCNN}
 
 
 \subsubsection{Largerr CNN with Inception Layers}
-In this experiment we try to increase the number of hidden neurons in the fully connected layers and we measure the resulting accuracy. This approach is usually exploited when there is underfitting: in our case there is not. However to increment the size of the dense layer turned out to be very effective in the previous experiments, so we will try to do that, but of course mitigating with dropout to avoid overfitting: \ref{fig: LargerInceptionLayersCNN}
+In this experiment we try to increase the number of hidden neurons in the fully connected layers and we measure the resulting accuracy. This approach is usually exploited when there is underfitting: in our case there is not. However to increment the size of the dense layer turned out to be very effective in the previous experiments, so we will try to do that, but of course mitigating with dropout to avoid overfitting:
 
 \begin{figure}[H]
 	\centering
@@ -520,7 +519,7 @@ The actual Hyperband optimization we used is the Keras Tuner, which provides aut
 \item Second model: $n\_neurons$=176, $dropout\_rate$=0.09 activation=ReLU, $lr$=0.0004
 \end{itemize}
 
-Summarizing the performance are the following:
+\noindent Summarizing the performance are the following:
 
 
 \begin{tabular}{ |p{5cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|  }
@@ -544,10 +543,10 @@ Optimized CNN with Inception layers & 0.664 & 0.6990 & 0.9695 & 0.9797\\
 \noindent Comparing the performance of the models found by the tuner w.r.t their original counterparts, we actually observe few differences: the first optimized model is slightly less performant than the custom one, while the optimized CNN with Inception Layers achieved slightly better results, but on test set it didn't overcome the loss value of the other model.
 
 \subsection{Visualization techniques}
-In this chapter we will adopt some technique to visually analyze what the network focuses on, in order to understand if our CNN is robust and is looking to the correct features to recognise the author of each painting. Taking again the 3.2.2 and 3.3.1 models, we will evaluate:
+In this chapter we will adopt some technique to visually analyze what the network focuses on, in order to understand if our CNN is robust and is looking to the correct features to recognize the author of each painting. Taking again the 3.2.2 and 3.3.1 models, we will evaluate:
 \begin{itemize}
 \item The heatmap class activations, that is starting from the activation level of a certain layer of our network with respect to a specific class, we apply a weighted gradient to highlight in the input image what portions of it were considered the most in order to classify the image with that label\footnote{SELVARAJU, Ramprasaath R., et al. Grad-cam: Visual explanations from deep networks via gradient-based localization. In: Proceedings of the IEEE international conference on computer vision. 2017. p. 618-626.}
-\item A partial exclusion mask, that is we try to occlude different portions and positions of the input image, to undesrtand if the network is still able to classify it correctly
+\item A partial exclusion mask, that is we try to occlude different portions and positions of the input image, to understand if the network is still able to classify it correctly
 \end{itemize} 
 
 \subsubsection{Class activations heatmap}
@@ -562,7 +561,7 @@ We took as input image, a test sample of Vincent Van Gogh, which had been correc
 	\label{fig: Test_image_visualization}
 \end{figure}
 
-\noindent Once selected our models, we replace the last layers with new ones in order to observe more clearly what the backprop gradients are, then after submitting the test image we record the locations of the activation map of the last layer that were "excited" the most. In this way we obtained our heatmap, which can be superimposed to the test image to visualize which locations were consdered as more interesting for the monitored convolutional layer. Applying it for the last convolution of both the models we obtained:
+\noindent Once selected our models, we replace the last layers with new ones in order to observe more clearly what the back-prop gradients are, then after submitting the test image we record the locations of the activation map of the last layer that were "excited" the most. In this way we obtained our heatmap, which can be superimposed to the test image to visualize which locations were considered as more interesting for the monitored convolutional layer. Applying it for the last convolution of both the models we obtained:
 
 
 \begin{figure}[H]
@@ -578,7 +577,7 @@ We took as input image, a test sample of Vincent Van Gogh, which had been correc
 	\end{subfigure}
 \end{figure}
 
-\noindent As we can see, the first model tends to look more "at the center" of the image, maybe seeking for author's typical characters/objects, or maybe recognizing the style or the typical color pattern of the objects. Rememebr also that this network aggressivly downsamples the input image, thus the remaining information at the center of the image will be very various and pretious for this network. On the other hand, the second model seems to "look at the edges", activating the most this heatmap in correspondence of the sky and the road: this network maybe is able to recognise the style of the author, and classifies images distinguishing how they represent common elements and maybe which colors and patterns characterise the background.
+\noindent As we can see, the first model tends to look more "at the center" of the image, maybe seeking for author's typical characters/objects, or maybe recognizing the style or the typical color pattern of the objects. Remember also that this network aggressively downsamples the input image, thus the remaining information at the center of the image will be very various and precious for this network. On the other hand, the second model seems to "look at the edges", activating the most this heatmap in correspondence of the sky and the road: this network maybe is able to recognize the style of the author, and classifies images distinguishing how they represent common elements and maybe which colors and patterns characterize the background.
 
 \subsubsection{Occlusion masks}
 The idea of occlusion masks is very simple and intuitive: in order to see what portions of the test image are considered to take the decision of the correct class, we "hide" with a black box a part of it and we submit the resulting image to the classifier, annotating the response. Iterating for different positions and different sizes, we can estimate the robustness of the network and the portions of the input image that it considers as "fundamental" to take the correct decision.
@@ -616,5 +615,5 @@ We iterated the algorithm with 3 occlusion mask sizes: 10, 28 and 35 pixels; we 
 
 \medskip
 
-\noindent From these results we can infer very interesting knowledge. First of all, the 3.2.2 network proved to be very robust and to be able to correctly classifying the image even in the most adverse situation, i.e. when the center is completely covered. This is absolutely not trivial if we consider that, as shown in the 3.5.1 heatmap, it tends to look exactly ate the center to classify the painting. Even more interesting what concerns the second model: as we observed in the 3.5.1 heatmap, it tends to focus on background characteristics, especially sky or ground style, and in fact when the sky or the center of the image (including the road) are occluded, the classification is wrong. In spite of it, we can say that it is "not so wrong": the first misprediction (b) outputted \textit{Alfred Sisley}, which was an impressionist (\textit{Van Gogh} was post-impressionist) whose style differs a bit from the Dutch painter, but the biggest differences are actually in the sky which is usually calm and regular for \textit{Sisley}, dramatic for \textit{Van Gogh}; without this information the error is comprehensible. A similar comsideration holds for the second misprediction (d): we can argue that from the center of the image the network considers very much the color, and in fact when we substituted it with a black box, it classified the test image as \textit{Rembrandt}, who is known for very dark painting, with a lot of black in the center.
+\noindent From these results we can infer very interesting knowledge. First of all, the 3.2.2 network proved to be very robust and to be able to correctly classifying the image even in the most adverse situation, i.e. when the center is completely covered. This is absolutely not trivial if we consider that, as shown in the 3.5.1 heatmap, it tends to look exactly ate the center to classify the painting. Even more interesting what concerns the second model: as we observed in the 3.5.1 heatmap, it tends to focus on background characteristics, especially sky or ground style, and in fact when the sky or the center of the image (including the road) are occluded, the classification is wrong. In spite of it, we can say that it is "not so wrong": the first misprediction (b) outputted \textit{Alfred Sisley}, which was an impressionist (\textit{Van Gogh} was post-impressionist) whose style differs a bit from the Dutch painter, but the biggest differences are actually in the sky which is usually calm and regular for \textit{Sisley}, dramatic for \textit{Van Gogh}; without this information the error is comprehensible. A similar consideration holds for the second misprediction (d): we can argue that from the center of the image the network considers very much the color, and in fact when we substituted it with a black box, it classified the test image as \textit{Rembrandt}, who is known for very dark painting, with a lot of black in the center.
 Anyway, from those results, the model 3.2.2 showed to be more robust and precise with respect to the 3.3.1 one. 
