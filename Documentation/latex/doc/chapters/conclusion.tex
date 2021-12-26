@@ -3,6 +3,6 @@ The project reports a series of possible solutions for the classification of tum
 
 FRASI SULLA SCRATCH
 
-DISCORSO FINALE SU PRETRAINED
-
-ENSEMBLE
+Regarding the pre-trained models we were able to obtain more satisfactory results than scratch and the best results were obtained thanks to VGG16, which with its simplicity manages better to classify than the larger networks that are trained with greater accuracy on \textit{imagenet}, which has a dataset very different from ours and perhaps this is the reason why we obtained slightly worse results for ResNets and Inception. 
+Much more satisfactory results have been obtained thanks to the ensemble, reaching thanks to the aggregation of VGG16s models about 96\% of accuracy, the highest value reached in all our tests, bringing the model obtained to be our final model for the identification of the painters of the paintings. One thing to keep in mind talking about the ensemble is the fact that the genetic algorithm finds the conclusion immediately or almost immediately, this thing is related to a lucky starting point, but also, above all, to the very small number of genes that are part of the different chromosomes.
+As for the state-of-art, we said in the introduction that the highest value obtained on the test accuracy was found by Nitin Viswanathan, and it was about 90\%, just few points below us. This makes our final result higher than the state-of-the-art.

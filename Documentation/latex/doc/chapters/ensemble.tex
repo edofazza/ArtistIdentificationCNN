@@ -11,24 +11,18 @@ Although we decided to use this simple approach, even if it is very common, we d
 
 The main problem was to choose which of these models combined together obtained the best accuracy. Since the number of models was more than 20 a grid search seemed too slow as a method of solving this problem, so we decided to use a genetic algorithm to solve the problem automatically.
 
+Anyway, due to the fact that we have different inputs for each type of network (ResNet, VGG and Inception) we decided to divide the ensembling networks into three types, one for each type of network.
 
 
+\subsubsection{The Ensemble Classese}
+To perform the ensemble in an orderly fashion, what was done was to create three classes called respectively \textit{EnsembleVGG}, \textit{EnsembleResNet} and \textit{EnsembleInception} . The classes allows to construct and ensemble method based on a subset or the entire set of network provided to it, and evaluate the obtained network using the \textit{Keras} function \textit{evaluate}.
 
-\subsubsection{The Ensemble Class}
-To perform the ensemble in an orderly fashion, what was done was to create a class called \textit{Ensemble}. The class allows to construct, predict and evaluate in a simple way ensemble networks composed of different models. Here the code:
+The class for VGG16 models is as follows:
 
 \begin{python}
-class Ensemble:
-
-    def __init__(self, test_images_vgg, test_images_resnet, test_images_inception):
+class EnsembleVGG:
+    def __init__(self, test_images_vgg):
         self.test_images_vgg = test_images_vgg
-        self.test_images_resnet = test_images_resnet
-        self.test_images_inception = test_images_inception
-
-        # obtain original labels
-        self.labels = np.array([])
-        for x, y in self.test_images_vgg:
-            self.labels = np.concatenate([self.labels, np.argmax(y.numpy(), axis=-1)])
 
         # create list of models
         self.model_list = []
@@ -36,80 +30,162 @@ class Ensemble:
         base_dir = './models/'
         # VGG16
         for name in vgg16:
-            self.model_list.append(ks.models.load_model(base_dir + 'vgg16/' + name))
+            tmp = ks.models.load_model(base_dir + 'vgg16/' + name)
+            tmp._name = name
+            for i, layer in enumerate(tmp.layers):
+                layer.trainable = False
+                layer._name = 'ensemble_' + str(i + 1) + '_' + layer.name
+            self.model_list.append(tmp)
 
-        # ResNet50
-        for name in resnet50:
-            self.model_list.append(ks.models.load_model(base_dir + 'resnet50/' + name))
 
-        # ResNet50
-        for name in resnet101:
-            self.model_list.append(ks.models.load_model(base_dir + 'resnet101/' + name))
-
-        # Inception
-        for name in inception:
-            self.model_list.append(ks.models.load_model(base_dir + 'inception/' + name))
-
-        # compute all prediction once for all
-        self.predictions = []
+    def ensembleModel(self, active_models):
+        models = []
         for i, model in enumerate(self.model_list):
-            if i < len(vgg16):
-                self.predictions.append(model.predict(self.test_images_vgg))
-            elif i < len(vgg16) + len(resnet50) + len(resnet101):
-                self.predictions.append(model.predict(self.test_images_resnet))
-            else:
-                self.predictions.append(model.predict(self.test_images_inception))
+            if active_models[i] == 1:
+                model._name = str(i)
+                models.append(model)
+        model_input = ks.Input(shape=(IMAGE_WIDTH_VGG, IMAGE_HEIGHT_VGG, 3))
+        model_outputs = [model(model_input) for model in models]
+        ensemble_output = ks.layers.Average()(model_outputs)
+        ensemble_model = ks.Model(inputs=model_input, outputs=ensemble_output)
+        ensemble_model.compile(metrics=['accuracy'])
+        return ensemble_model
 
-    def predict(self, active_models):
-        sum_prediction = None
-        start = 0
-        count = 0
+    def evaluate(self, ensemble_model):
+        loss, acc = ensemble_model.evaluate(self.test_images_vgg)
+        return acc
 
+    def ensemble_and_evaluate(self, active_models):
         if np.sum(active_models) == 0:
-            return None
+            return 0.0
+        elif np.sum(active_models) == 1:
+            print(active_models.index(1))
+            return self.evaluate(self.model_list[active_models.index(1)])
+        else:
+            return self.evaluate(self.ensembleModel(active_models))
 
-        for start, active_model in enumerate(active_models):
-            if active_model == 1:
-                sum_prediction = self.predictions[start]
-                count += 1
-                break
-
-        # additional model selected and added
-        for i in range(start + 1, len(self.model_list)):
-            if active_models[i] == 0:
-                continue
-            sum_prediction += self.predictions[i]
-            count += 1
-
-        print(count)
-        final_preds = 1 / count * sum_prediction
-        return np.argmax(final_preds, axis=1)
-
-    def evaluate(self, predictions):
-        if predictions == 0:
-            return 0
-
-        count = 0
-        for i, prediction in enumerate(predictions):
-            if int(self.labels[i]) == prediction:
-                count += 1
-        return count/len(self.labels)
-
-    def predict_and_evaluate(self, active_models):
-        return self.evaluate(self.predict(active_models))
-
-    def labels_len(self):
-        return len(self.labels)
-        
     def models_len(self):
         return len(self.model_list)
 \end{python}
 
-The \textit{constructor} takes in input 3 datasets that are equal to each other except for the size of the images, in fact VGG, ResNet and Inception want in input images with size (256,256), (224, 244) and (299,299) respectively: this is done in order to correctly evaluate the models without having errors due to the input data. The constructor also computes the labels of each test sample, loads the models and computes the predictions for each of them, this is done to speed up the execution of the genetic algorithm.
+The class related to the ResNet family of networks is as follows:
 
-Moving on to discuss the \textit{predict} function, it takes as input an array of length equal to the total number of models consisting of zeros or ones. The array indicates the models to be used: in the same position where a one is present the corresponding model inside {model\_list} must be used.
+\begin{python}
+class EnsembleResNet:
+    def __init__(self, test_images_resnet):
+        self.test_images_resnet = test_images_resnet
 
-As for the \textit{evaluate} function, it takes an array of predictions and returns the accuracy, calculated as the number of correct predictions over the total number of test samples.
+        # create list of models
+        self.model_list = []
+
+        base_dir = '/content/drive/MyDrive/Fazzari_Ramo/Models/'
+        # ResNet
+        resnet = resnet50 + resnet101
+        for i, name in enumerate(resnet):
+            if i < len(resnet50):
+                tmp = ks.models.load_model(base_dir + 'resnet50/' + name)
+            else:
+                tmp = ks.models.load_model(base_dir + 'resnet101/' + name)
+            tmp._name = name
+            for j, layer in enumerate(tmp.layers):
+                layer.trainable = False
+                layer._name = 'ensemble_' + str(j + 1) + '_' + layer.name
+
+            self.model_list.append(tmp)
+
+
+
+    def ensembleModel(self, active_models):
+        models = []
+        for i, model in enumerate(self.model_list):
+            if active_models[i] == 1:
+                model._name = str(i)
+                models.append(model)
+        model_input = ks.Input(shape=(IMAGE_WIDTH_RESNET, IMAGE_HEIGHT_RESNET, 3))
+        model_outputs = [model(model_input) for model in models]
+        ensemble_output = ks.layers.Average()(model_outputs)
+        ensemble_model = ks.Model(inputs=model_input, outputs=ensemble_output)
+        ensemble_model.compile(metrics=['accuracy'])
+        return ensemble_model
+
+    def evaluate(self, ensemble_model):
+        loss, acc = ensemble_model.evaluate(self.test_images_resnet)
+        return acc
+
+    def ensemble_and_evaluate(self, active_models):
+        if np.sum(active_models) == 0:
+            return 0.0
+        elif np.sum(active_models) == 1:
+            print(active_models.index(1))
+            return self.evaluate(self.model_list[active_models.index(1)])
+        else:
+            return self.evaluate(self.ensembleModel(active_models))
+
+    def models_len(self):
+        return len(self.model_list)
+\end{python}
+
+Finally, the ensemble class for Inception is:
+
+\begin{python}
+class EnsembleInception:
+    def __init__(self, test_images_inception):
+        self.test_images_inception = test_images_inception
+
+        # create list of models
+        self.model_list = []
+
+        base_dir = '/content/drive/MyDrive/Fazzari_Ramo/Models/'
+        # VGG16
+        for name in inception:
+            tmp = ks.models.load_model(base_dir + 'inception/' + name)
+            tmp._name = name
+            for i, layer in enumerate(tmp.layers):
+                layer.trainable = False
+                layer._name = 'ensemble_' + str(i + 1) + '_' + layer.name
+            self.model_list.append(ks.models.load_model(base_dir + 'inception/' + name))
+
+
+    def ensembleModel(self, active_models):
+        models = []
+        for i, model in enumerate(self.model_list):
+            if active_models[i] == 1:
+                model._name = str(i)
+                models.append(model)
+        model_input = ks.Input(shape=(IMAGE_WIDTH_INCEPTION, IMAGE_HEIGHT_INCEPTION, 3))
+        model_outputs = [model(model_input) for model in models]
+        ensemble_output = ks.layers.Average()(model_outputs)
+        ensemble_model = ks.Model(inputs=model_input, outputs=ensemble_output)
+        ensemble_model.compile(metrics=['accuracy'])
+        return ensemble_model
+
+    def evaluate(self, ensemble_model):
+        loss, acc = ensemble_model.evaluate(self.test_images_inception)
+        return acc
+
+    def ensemble_and_evaluate(self, active_models):
+        if np.sum(active_models) == 0:
+            return 0.0
+        elif np.sum(active_models) == 1:
+            print(active_models.index(1))
+            return self.evaluate(self.model_list[active_models.index(1)])
+        else:
+            return self.evaluate(self.ensembleModel(active_models))
+
+    def models_len(self):
+        return len(self.model_list)
+\end{python}
+
+The constructor takes as input the testset for which the ensemble class will do the evaluation, and what it does is load the different models. Next, in each three we have four functions:
+
+\begin{enumerate}
+	\item \textit{ensembleModel}: given an array of equal size to the number of different models, the function creates an ensemble model using the models that are in the position where in the input array there is a one.
+	\item \textit{evaluate}: calls the keras evaluate function on the ensemble model
+	\item \textit{ensemble\_and\_evaluate}: calls both the ensembleModel and the evaluate functions. In cases the input is all made of zeros, it returns 0 without farther computations, on the other hand if the input has only one 1 in it the function evaluates it directly.
+	\item \textit{models\_len}: retrieves the number of models.
+\end{enumerate}
+
+Notice that in all functions we modified the name of the layers and models in order to prevent every form of name duplication in the ensemble network.  
 
 \subsubsection{Genetic Algorithm Workflow}
 Following the guidelines in Section 2.6, we need to decide how to develop the different components and decide on the hyperparameters in order to define the flow of the genetic algorithm.
@@ -132,7 +208,7 @@ toolbox.register('individualCreator', tools.initRepeat, creator.Individual, tool
 \end{python}
 
 \paragraph{Population}
-The population is composed of 100 individuals, we decided to keep a high number of individuals in order to have more chances to have more different individuals and therefore to have different starting points in order to converge better to the optimal solution. Although the number of individuals may seem very high, we decided to increase the speed of the computation of the prediction simply by calculating once and for all the values of the predictions for each classifier at the creation of the Ensemble class, and save them in memory for later use without having to recompute them.
+The population is composed of 8 individuals, we decided to keep the number of individuals low so as to reduce the number of evaluations done and, therefore, the total duration of the algorithm, in order to obtain a satisfactory result by waiting less than an hour.
 
 \begin{python}
 toolbox.register('populationCreator', tools.initRepeat, list, toolbox.individualCreator)
@@ -143,17 +219,18 @@ The fitness function is the accuracy obtained through the \textit{predict\_and\_
 
 \begin{python}
 def ensembleAccuracy(individual):
-    return ensemble.predict_and_evaluate(individual)
+    return ensemble.predict_and_evaluate(individual),
 
 toolbox.register('evaluate', ensembleAccuracy)
 \end{python}
 
+Notice that the function returns a tuple, this is done because the framework accept only tuple values as result of the evaluation function.
 \paragraph{Selection Algorithm}
-The selection algorithm used in this case is \textit{tournament selection}. In each round of the tournament selection method, two individuals are randomly picked from the population, and the one with the highest fitness score wins and gets selected. We decided to select only five individuals since our population is small and selecting more could cause an abuse in exploitation.
+The selection algorithm used in this case is \textit{tournament selection}. In each round of the tournament selection method, two individuals are randomly picked from the population, and the one with the highest fitness score wins and gets selected. We decided to select only two individuals since our population is small and selecting more could cause an abuse in exploitation.
 
 \begin{python}
-# Tournament selection with tournament size of 5:
-toolbox.register("select", tools.selTournament, tournsize=5)
+# Tournament selection with tournament size of 2:
+toolbox.register("select", tools.selTournament, tournsize=2)
 \end{python}
 
 
@@ -192,7 +269,7 @@ toolbox.register("mutate", tools.mutFlipBit, indpb=1.0/INDIVIDUAL_LENGTH)
 
 
 \paragraph{Elitism}
-We set the number of individuals for the elitism mechanism to 5. This value has been chosen in consideration of the fact that the number of individuals is 100, not very high, and that an individual is composed of little more than twenty genes: if we chose a higher value for the hall of fame, what could happen is that we could not exploit much the global search carried out by the exploration because we would end up with very similar chromosomes; therefore, in order not to risk bad results, we chose to use this conservative approach and limit the number to these few.
+We set the number of individuals for the elitism mechanism to 1. This value was decided to have a minimum of elitism, but without abusing it too much. In fact, the number of individuals is so low that having a higher value could lead to a problem, therefore, in order not to risk bad results (i.e., not global optimum results), we chose to use this conservative approach and limit the number to only one.
 
 \paragraph{GA Flow}
 The first thing to do is to define the initial population, this is easily done by the following line of code:
@@ -229,3 +306,66 @@ population, logbook = eaSimpleWithElitism(population,
 \end{python}
 
 Where the P\_CROSSOVER is equal to 0.9, P\_MUTATION 0.1.\footnote{Value suggested by the book ”Hands on Genetic Algorithms with Python” by Eyal Wirsansky, also the other values of probabilities are taken by the suggestions of the book}
+
+
+
+\subsubsection{GA Results for VGG16 Ensemble}
+The following graph shows the results obtained for each generation from the population (i.e., the maximum and mean accuracy):
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.4\textwidth]{img/ensemble/vgg.png}
+	\caption{Maximum and average accuracy in the population for each generation.}
+	\label{fig:ensemblevgg}
+\end{figure}
+
+
+As it can be noticed from the graph the elitism allows the maximum value to never go down. Moreover, it is possible to notice that the maximum result obtained is much higher than the one obtained with VGG16, which reached almost 80\%, instead here we reach 95.86\%. This was obtained from the genetic algorithm by combining the following models together:
+ \begin{itemize}
+	\item VGG16 feature extraction
+	\item VGG16 feature extraction with dropout
+	\item VGG16 with 2 layers finetuned and with dropout
+         \item VGG16 with 1 layer finetuned
+\end{itemize}
+Chosen by the chromosome [0, 0, 1, 1, 1, 1, 0], our winner in the final population.
+
+
+
+\subsubsection{GA Results for ResNet Ensemble}
+The following graph shows the results obtained for each generation from the population (i.e., the maximum and mean accuracy):
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.4\textwidth]{img/ensemble/resnet.png}
+	\caption{Maximum and average accuracy in the population for each generation.}
+	\label{fig:ensembleresnet}
+\end{figure}
+
+The maximum accuracy value for ResNet was obtained in Section 4.2.4 using fine tuning of one block and two additional dense layers at the end of the network, reaching an accuracy score of 0.6736. Also here we exceed the value reached by the single model obtaining a much higher value, reaching 0.8483, satisfactory value even if lower than the one obtained with the ensemble of VGGs. This was obtained from the genetic algorithm by combining the following models together:
+ \begin{itemize}
+	\item ResNet50 with 1 block finetuned 
+         \item ResNet50 with 2 blocks finetuned 
+         \item ResNet50 with 1 block finetuned plus two dense layers at the end of it
+         \item ResNet50 with 2 blocks finetuned plus two dense layers at the end of it
+	\item ResNet101 finetuned till block 4
+\end{itemize}
+Chosen by the chromosome [0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0], our winner in the final population.
+
+
+\subsubsection{GA Results for ResNet Inception}
+The following graph shows the results obtained for each generation from the population (i.e., the maximum and mean accuracy):
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.4\textwidth]{img/ensemble/inception.png}
+	\caption{Maximum and average accuracy in the population for each generation.}
+	\label{fig:ensembleinception}
+\end{figure}
+
+The maximum accuracy value for Inception was obtained in Section 4.4.5 fine tuning 3 blocks and using exponential decay for the learning rate, reaching an accuracy score of 0.5803. Also here we exceed the value reached by the single model obtaining a much higher value, reaching 0.9264, satisfactory value even if lower than the one obtained with the ensemble of VGGs. This was obtained from the genetic algorithm by combining the following models together:
+ \begin{itemize}
+	\item Inception with 1 block finetuned
+	\item Inception with 3 blocks finetuned
+\end{itemize}
+Chosen by the chromosome [0, 1, 0, 1, 0], our winner in the final population.
+
