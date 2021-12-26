@@ -1,7 +1,12 @@
 \section{Introduction}
 Artist identification is traditionally performed by \textit{art historians} and \textit{curators} who have expertise and familiarity with different artists and styles of art. This is a complex and interesting problem for computers because identifying an artist does not just require object or face detection; artists can paint a wide variety of objects and scenes. Additionally, many artists from the same time period will have similar styles, and some such as \textbf{Pablo Picasso} (see figure \ref{fig:picasso}) have painted in multiple styles and changed their style over time.
 
-de
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.4\textwidth]{img/picasso.png}
+	\caption{Both of these paintings were created by Pablo Picasso, but they have vastly different styles and content.}
+	\label{fig:picasso}
+\end{figure}
 
 \noindent The aim of this project is to use Convolutional Neural Networks for the identification of an artist given a painting. In particular, the CNN networks will be modeled using multiple techniques: from scratch; via pretrained network; networks based on comparison with baseline input and using an ensemble network made of by the best classifiers found.
 
