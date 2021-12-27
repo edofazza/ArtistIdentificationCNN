@@ -12,7 +12,7 @@ In the following chapters we will make use of different strategies:
 In order to allow a better and faster reading of the tests done, in the following paragraph the mentioned strategies are discussed.
 
 \subsection{Data Augmentation}
-Data augmentation takes the approach of generating more training data from existing training samples by augmenting the samples via a number of random transformations that yield believable-looking images. The goal is that, at training time, your model will never see the exact same picture twice. This helps expose the model to more aspects of the data so it can generalize better.
+Data augmentation takes the approach of generating more training data from existing training samples by augmenting the samples via a number of random transformations that yield believable-looking images. The goal is that, at training time, your model will never see the exact same picture twice. This helps to expose the model to more aspects of the data so it can generalize better.
 In Keras, this can be done by adding a number of data augmentation layers at the start of your model. In our model, we included the following transformation:
 
 \begin{python}

@@ -8,13 +8,13 @@ Artist identification is traditionally performed by \textit{art historians} and 
 	\label{fig:picasso}
 \end{figure}
 
-\noindent The aim of this project is to use Convolutional Neural Networks for the identification of an artist given a painting. In particular, the CNN networks will be modeled using multiple techniques: from scratch; via pretrained network; networks based on comparison with baseline input and using an ensemble network made of by the best classifiers found.
+\noindent The aim of this project is to use Convolutional Neural Networks for the identification of an artist given a painting. In particular, the CNN networks will be modeled using multiple techniques: from scratch; via pretrained networks and using an ensemble network made of the best trained classifiers.
 
 
 \subsection{State of the Art}
 As mentioned, artist identification has primarily been tackled by humans. An example of that is the Artsy's Art Genome Project \footnote{https://www.artsy.net/categories}, which is led by experts who manually classify art. This strategy is not very scalable even if it is highly precise in the classification (the site is a marketplace of fine-arts for collects, you can find Pisarro, Bansky and other famous artists).
 
-Most prior attempts to apply machine learning to this problem have been feature-based, aiming to identify what qualities most effectively distinguish artists and styles. Many generic image features have been used, including scale-invariant feature transforms (SIFT), histograms of oriented gradients (HOG), and more, but with the focus on \textit{discriminating different style} in Fine-Art Painting\footnote{T. E. Lombardi. The classification of style in fine-art paint-
+Most prior attempts to apply machine learning to this problem have been feature-based, aiming to identify what qualities most effectively distinguish artists and styles. Many generic image features have been used, including scale-invariant feature transforms (SIFT), histograms of oriented gradients (HOG), and more, but with the focus on \textit{discriminating different styles} in Fine-Art Painting\footnote{T. E. Lombardi. The classification of style in fine-art paint-
 ing. ETD Collection for Pace University, 2005}.
 
 The first time the problem of artist identification was really tackled was with J. Jou and S. Agrawal\footnote{J. Jou and S. Agrawal. Artist identification for renaissance paintings.} in 2011, they applied several multi-class classification techniques like Naïve Bayes, Linear Discriminant Analysis, Logistic Regression, K-Means and SVMs and achieve a maximum classification accuracy of 65\% for an unknown painting across 5 artists. 
@@ -28,7 +28,7 @@ Viswanathan, using the same dataset of the mentioned \textit{Kaggle Challenge}, 
 
 
 \subsection{Dataset}
-Unfortunately, the dataset provided by the \textit{Kaggle Challange} is huge thus unfeasible to be used in Colab: in fact it is about 60GB unbearable on the free version of Colab, which provides only about 30GB of disk. Stated that, we decided to use a different dataset\footnote{https://www.kaggle.com/ikarus777/best-artworks-of-all-time} with only 2GB of data and about 8k unique images.
+Unfortunately, the dataset provided by the \textit{Kaggle Challange} is huge thus unfeasible to be used in Colab: in fact it is about 60GB: unbearable on the free version of Colab, which provides only about 30GB of disk. Stated that, we decided to use a different dataset\footnote{https://www.kaggle.com/ikarus777/best-artworks-of-all-time} with only 2GB of data and about 8k unique images.
 
 \noindent The data downloaded from Kaggle has the following directories and csv file:
 \dirtree{%

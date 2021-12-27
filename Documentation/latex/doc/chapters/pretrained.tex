@@ -99,11 +99,11 @@ We have two possible positions to use the dropout layer in our network and they 
 	\end{subfigure}
 \end{figure}
 
-\noindent As expected, dropout mitigated the magnitude of overfitting, however our network perform slightly worst (now the validation accuracy is 0.73 and before was 0.74) than without the dropout layer.
+\noindent As expected, dropout mitigated the magnitude of overfitting, however our network perform slightly worst on accuracy (now the validation one is 0.73, before was 0.74) than without the dropout layer, but shown quite good improvement in the loss value.
 
 
 \subsubsection{Test 3: Finetuning One Convolutional Layer}
-Using the model defined in test 1, the 3rd Conv2D layer in the 5th block is un-fronzen and the network is trained. The result obtained using RMSprop as optimizer are the following:
+Using the model defined in test 4.1.1, the 3rd Conv2D layer in the 5th block is un-fronzen and the network is trained. The result obtained using RMSprop as optimizer are the following:
 
  
  \medskip
@@ -134,7 +134,7 @@ Using the model defined in test 1, the 3rd Conv2D layer in the 5th block is un-f
 \end{figure}
 
 
-Again the performance are worst than in test one, but looking at the graphs it can be seen that not only our network overfitted very fast, but it forms also few fang-shaped changes in direction. 
+Again the performance are deterioted especially on test set, moreover looking at the graphs it can be seen that not only our network overfitted very fast, but it forms also few fang-shaped changes in direction. 
 
 
 
@@ -173,7 +173,7 @@ To overcome the previous problems, the overfitting and the strange shape behavio
 \end{figure}
 
 
-\noindent Adding dropout and a different optimizer with a little learning rate, we finally obtained what we were aiming. Anyway, the result is now comparable to the test 1, however now we our using a more complex network which is not good if the results are the same.
+\noindent Adding dropout and a different optimizer with a little learning rate, we finally obtained what we were aiming, with results now comparable with the ones on test 4.1.1, but now we our using a more complex network.
 
 However we can still do something, the training accuracy increases very rapidly even if dropout is applied. To decrease this effect in test 6 we use weight regularization techniques.
 
@@ -248,7 +248,7 @@ In this paragraph we exploited the conclusion mentioned in test 4, introducing h
 	\end{subfigure}
 \end{figure}
 
-The shapes of the graphs are more or less the same of the two had in test 4, the only things that changes are the values of the losses which are here higher and more curvilinear due to the weight regularization approach used. Anyway, this heavy regularization helped us to surpass the result in test 1, not by much but it is an improvement that, maybe, can be exploited finetuning more. Following this lead, in the next paragraph we use weight regularization with two convolutional layers finetuned.
+The shapes of the graphs are more or less the same of the two had in test 4, the only things that changes are the values of the losses which are here higher and more curvilinear due to the weight regularization approach used. Anyway, this heavy regularization helped us to surpass the result in test 1, not by much but it is an improvement that, maybe, can be exploited finetuning more. The model could potentially been trained more, restoring then best weights in case of no improvements, but due to Colab limitations it was impossible to go further. Following this lead, in the next paragraph we use weight regularization with two convolutional layers finetuned.
 
 
 
@@ -380,9 +380,9 @@ The original ResNet50 comes with a GlobalAveragePooling2D and a prediction layer
 	\end{subfigure}
 \end{figure}
 
-The network poorly performed compered with the results obtained using VGG16. This can be explained since the \textit{imagenet dataset} is not specialized in distinguish paintings' artists, thus the frozen weights of our networks are very far to be the ones we need. To overcome this problem we can fine tune or add more layers after the \textit{GlobalAveragePooling2D} layer.
+The network poorly performed compered with the results obtained using VGG16. This can be explained since the \textit{imagenet dataset} is not specialized in distinguish paintings' artists, thus the frozen weights of our networks are very far to be the ones we need: the only prediction layer cannot learn properly those distinctions alone and as result the network underfits. To overcome this problem we can fine tune or add more layers after the \textit{GlobalAveragePooling2D} layer.
 
-Another problem can be notice looking at the accuracy plot, the training accuracy is less than the validation accuracy. To understand this issue, it is important to consider the difference of the number of images in the training and validation set. The validation set is made of about few hundreds of pictures against the few thousands of the training set, the latter may involve, with greater probability, paintings being part of a different period of the artists (e.g., the example shown in Image\ref{fig:picasso}), which can lead to a worst accuracy.
+Another problem can be notice looking at the accuracy plot, the training accuracy is less than the validation accuracy. To understand this issue, it is important to consider the difference of the number of images in the training and validation set. The validation set is made of about few hundreds of pictures against the few thousands of the training set, the latter may involve, with greater probability, paintings being part of a different period of the artists (e.g., the example shown in Image\ref{fig:picasso}), which can lead to a worse accuracy.
 
 
 \subsubsection{Test 2: Finetuning 1 block}
@@ -413,7 +413,7 @@ ResNet50V2 is made of multiple big blocks (i.e., 5) so called \textit{conv} in t
 	\end{subfigure}
 \end{figure}
 
-\noindent As expected, the network has definitely reach a more satisfactory result. Also the behaviors of the curves now is more reasonable. 
+\noindent As expected, the network has definitely reached a more satisfactory result. Also the behavior of the curves is now is more reasonable. 
 
 
 
@@ -445,7 +445,7 @@ Since finetuning a block led to better results, the next step we did was to tuni
 	\end{subfigure}
 \end{figure}
 
-This results proves that our idea of finetuning was good since the network improved a little. Anyway, finetuning more can be risky since the computational power and time needed can be very high and becoming unbearable to the limits imposed by Colab. Thus, we tried to improved (without satisfaction, as the nexts to paragraphs describe) our network adding dense layers between our \textit{GlobalAveragePooling2D} and our prediction layer, following the structure used in the VGG16 study.
+This results proves that our idea of finetuning was good since the network improved a little. Anyway, finetuning more can be risky since the computational power and time needed can be very high and becoming unbearable to the limits imposed by Colab. Thus, we tried to improve (without satisfaction, as the nexts to paragraphs describe) our network adding dense layers between our \textit{GlobalAveragePooling2D} and our prediction layer, following the structure used in the VGG16 study.
 
 
 
@@ -509,7 +509,7 @@ In this paragraph we did the same thing done in test 4, but finetuning two block
 \end{figure}
 
 
-Unfortunately, finetuning this much with these additional layers led to worst performance. Perhaps, this is due to backpropagation, which changed the weights (which are 9M, against the 14M that are not trainable) to a not-optimal solution. Anyway, this result is also too poor compared to test 3, which without having the newly added dense layers still perform better.
+Unfortunately, finetuning too much with these additional layers led to worst performance. Perhaps, this is due to backpropagation, which changed the weights (which are 9M, against the 14M that are not trainable) to a not-optimal solution. Anyway, this result is also too poor compared to test 3, which without having the newly added dense layers still perform better.
 
 
 
@@ -581,7 +581,7 @@ As done for ResNet50, we tried to improve our ResNet101 performance using finetu
 	\end{subfigure}
 \end{figure}
 
-As expected, the performance are better compered to test 1. Anyway, the network still do not overfit: finetuning just one sub-block is not enough for a neural network made of 101 layers. 
+As expected, the performance are better compered to test 1. Anyway, the network still cannot converge: finetuning just one sub-block is not enough for a neural network made of 101 layers. 
 
 \subsubsection{Test 3: Finetuning the Entire Block 5}
 Aiming to overfitting, we finetuned the entire block 5, which is made of 3 sub-blocks.
@@ -611,7 +611,7 @@ Aiming to overfitting, we finetuned the entire block 5, which is made of 3 sub-b
 	\end{subfigure}
 \end{figure}
 
-Unfortunately, we have little less performance and we still not completely overfitting: the training accuracy is less than 0.9, meaning that we are not finetuning enough but we are following the right lead since the training accuracy gain 0.1 point.
+Unfortunately, we have little less performance and we still don't reach convergence: the training accuracy is less than 0.9, meaning that we are not finetuning enough but we are following the right lead since the training accuracy gain 0.1 point.
 
 
 \subsubsection{Test 4: Finetuning Half Block 4}
@@ -642,7 +642,7 @@ In this paragraph, heavy finetuning is done setting as trainable parameters all 
 	\end{subfigure}
 \end{figure}
 
-Finetuning these many layers helped the network to be more our topic-specific. In fact, the neural network finally overfit properly our training data as the accuracy plot shows, also even the loss is lesser than before. However, even if we improve from the previous test it is not enough if we consider the best result obtained using ResNet50 or VGG16.
+Finetuning these many layers helped the network to be more topic-specific. In fact, the neural network finally overfit properly our training data as the accuracy plot shows, also even the loss is higher than before. However, even if we improve from the previous test it is not enough if we consider the best result obtained using ResNet50 or VGG16.
 
 
 \subsubsection{Test 5: Test 4 and Dropout}
@@ -718,7 +718,7 @@ The introduction of these layers worsen the performance of test 4, but they help
 
 
 \subsubsection{Test 7: Going Deeper and Deeper}
-Since increasing the finetuning level led to better result in the previous tests, we finetuned ResNet101 till \textit{conv3\_block4\_out} including the parameters of all conv4 (i.e., block4). The network in this way has really unbalanced in terms of trainable parameters, most of them were trainable (i.e., about 80\%). Even that, we tested it and what we obtain was a failure, the network didn't learn well an ended up with a tremendous low accuracy. Thus, we decided to limit our going deeper to the \textit{conv4\_block10\_out}: adding three more sub-blocks to the ones tested in test 3 (which is still our current optimum).
+Since increasing the finetuning level led to better result in the previous tests, we finetuned ResNet101 till \textit{conv3\_block4\_out} including the parameters of all conv4 (i.e., block4). The network in this way is really unbalanced in terms of trainable parameters, most of them were trainable (i.e., about 80\%). Even that, we tested it and what we obtain was a failure, the network didn't learn well an ended up with a tremendous low accuracy. Thus, we decided to limit our going deeper to the \textit{conv4\_block10\_out}: adding three more sub-blocks to the ones tested in test 3 (which is still our current optimum).
 \noindent The result obtained are the following:
 
 \medskip
@@ -835,7 +835,7 @@ As done for the previous networks, we finetuned one block at a time, where a blo
 	\end{subfigure}
 \end{figure}
 
-As expected, the network finally overfitted and the accuracy of the validation set increased as well. Anyway, the curves in the last epochs have a strange behavior, the validation accuracy and loss suddenly go worst. Perhaps, this is due to the fact that we are overfitting by few epochs at that point and the iteration moves the curves to points that are in the close to an high accuracy, but which features are far different from the one of the validation set.
+As expected, the network finally overfitted and the accuracy of the validation set increased as well. Anyway, the curves in the last epochs have a strange behavior, the validation accuracy and loss suddenly go worse. Perhaps, this is due to the fact that we are overfitting by few epochs at that point and the iteration moves the curves to points that are in the close to an high accuracy, but which features are far different from the one of the validation set.
 
 
 
@@ -869,13 +869,13 @@ Since we want to find first a good number of blocks to set trainable and than op
 	\end{subfigure}
 \end{figure}
 
-The plots are more or less similar to the ones in the previous test, but the validation accuracy is greater by 0.3 points and the test accuracy is less than 0.3 points. As said before, this can be addressed to the fact that the test and validation set can be different to each other in term of style, thus same feature discovered by a feature map can apply correctly to one case and not in the other. Anyway, since we are supposed to know nothing about the test set and our conclusion should only be driven by the result of the validation, the model can be consider an improvement of the one obtained in the previous test.
+The plots are more or less similar to the ones in the previous test, but the validation accuracy is greater by 0.03 points and the test accuracy is less than 0.03 points and with doubled loss. As said before, this can be addressed to the fact that the test and validation set can be different to each other in term of style, thus same feature discovered by a feature map can apply correctly to one case and not in the other. Anyway, since we are supposed to know nothing about the test set and our conclusion should only be driven by the result of the validation, the model can be consider an improvement of the one obtained in the previous test.
 
 Also in this case, the accuracy (loss) decreases (increases) suddenly, but the behavior seems here to be alleviated. Thus, suggesting that finetuning more blocks can help preventing this strange behavior.
 
 
 \subsubsection{Test 4: Finetuning 3 Blocks}
-Finetuning till the third last block was our maximum in finetuning this type of network, since finetuning more led to worst performance\footnote{Here not reported, but the code on GitHub provide the possibility to finetune other 2 more layers.}.
+Finetuning till the third last block was our maximum in finetuning this type of network, since finetuning more led to worse performance\footnote{Here not reported, but the code on GitHub provide the possibility to finetune other 2 more layers.}.
 
 \noindent The results obtained are (learning rate=0.0001, Adam):
 
@@ -904,7 +904,7 @@ Finetuning till the third last block was our maximum in finetuning this type of 
 	\end{subfigure}
 \end{figure}
 
-First thing to notice is the absence of the strange behavior underlined in the previous paragraphs, having more parameters to train help our network to discover a better solution. The validation accuracy gained other 0.3 points and the testing accuracy increases a lot reaching 0.59: the model become more precise in understanding the differences between authors, differences that in the testing loss are more concise reading this result.
+First thing to notice is the absence of the strange behavior underlined in the previous paragraphs, having more parameters to train help our network to discover a better solution. The validation accuracy gained other 0.03 points and the testing accuracy increases a lot reaching 0.59: the model become more precise in understanding the differences between authors, differences that in the testing loss are more concise reading this result.
 
 Anyway, we overfit very fast so we decided to try preventing it using dropout.
 
@@ -970,6 +970,6 @@ In this test, we perform the same strategy of test 4 (finetuning 3 blocks), but 
 
 It is important to notice that this method led us to reach high accuracy values on the training very quickly, but at the same time increasing the validation accuracy rapidly, and then stabilizing and growing slightly (almost imperceptibly looking at the plot), leading to improve more and more the accuracy obtaining the reported value. Moreover, we have a very high value for the test set as well, making this model the best obtained for InceptionV3.
 
-An important thing to take into consideration is the behavior of the loss, which appears here much higher than in the fourth test, this can be explained perhaps by a different direction that our system takes in the search for convergence.
+An important thing to take into consideration is the behavior of the loss, which appears here much higher than in the fourth test, this means that even if we achieved a more precise model, we pay in the robustness of it.
 
 

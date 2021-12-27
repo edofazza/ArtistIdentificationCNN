@@ -14,8 +14,8 @@ The main problem was to choose which of these models combined together obtained 
 Anyway, due to the fact that we have different inputs for each type of network (ResNet, VGG and Inception) we decided to divide the ensembling networks into three types, one for each type of network.
 
 
-\subsubsection{The Ensemble Classese}
-To perform the ensemble in an orderly fashion, what was done was to create three classes called respectively \textit{EnsembleVGG}, \textit{EnsembleResNet} and \textit{EnsembleInception} . The classes allows to construct and ensemble method based on a subset or the entire set of network provided to it, and evaluate the obtained network using the \textit{Keras} function \textit{evaluate}.
+\subsubsection{The Ensemble Classes}
+To perform the ensemble in an orderly fashion, what was done was to create three classes called respectively \textit{EnsembleVGG}, \textit{EnsembleResNet} and \textit{EnsembleInception}. The classes allows to construct an ensemble method based on a subset or the entire set of network provided to it, and evaluate the obtained network using the \textit{Keras} function \textit{evaluate}.
 
 The class for VGG16 models is as follows:
 
@@ -181,7 +181,7 @@ The constructor takes as input the testset for which the ensemble class will do 
 \begin{enumerate}
 	\item \textit{ensembleModel}: given an array of equal size to the number of different models, the function creates an ensemble model using the models that are in the position where in the input array there is a one.
 	\item \textit{evaluate}: calls the keras evaluate function on the ensemble model
-	\item \textit{ensemble\_and\_evaluate}: calls both the ensembleModel and the evaluate functions. In cases the input is all made of zeros, it returns 0 without farther computations, on the other hand if the input has only one 1 in it the function evaluates it directly.
+	\item \textit{ensemble\_and\_evaluate}: calls both the ensembleModel and the evaluate functions. In cases the input is all made of zeros, it returns 0 without further computations, on the other hand if the input has only one 1 in it the function evaluates it directly.
 	\item \textit{models\_len}: retrieves the number of models.
 \end{enumerate}
 
