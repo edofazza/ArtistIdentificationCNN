@@ -7,11 +7,13 @@ Ensembling relies on the assumption that different well-performing models traine
 \subsection{Our approach}
 In our project we decided to use a simple ensembling approach, which is \textit{average voting}: average voting computes the average of the scores (i.e., softmax output) of the base classifiers and select the class with the highest score.
 
-Although we decided to use this simple approach, even if it is very common, we decided to optimize the choice of models to be used in order to maximize the accuracy obtained on the testset. In fact, all the models described in the chapter "pre-trained models" have been saved as \textit{".keras"} models so that they can be reloaded and used to directly evaluate the testset in the ensemble, so that they do not need to be trained again (thus increasing the speed of test execution).
+Although we decided to use this simple approach, even if it is very common, we decided to optimize the choice of models to be used in order to maximize the accuracy obtained on the validation set. In fact, all the models described in the chapter "pre-trained models" have been saved as \textit{".keras"} models so that they can be reloaded and used to directly evaluate the validation set in the ensemble, so that they do not need to be trained again (thus increasing the speed of test execution).
 
 The main problem was to choose which of these models combined together obtained the best accuracy. Since the number of models was more than 20 a grid search seemed too slow as a method of solving this problem, so we decided to use a genetic algorithm to solve the problem automatically.
 
 Anyway, due to the fact that we have different inputs for each type of network (ResNet, VGG and Inception) we decided to divide the ensembling networks into three types, one for each type of network.
+
+After each genetic solution, we tested the network obtained on the test set in order to see the improvement we have on an unseen set, as we did in the previous Sections.
 
 
 \subsubsection{The Ensemble Classes}
@@ -21,13 +23,13 @@ The class for VGG16 models is as follows:
 
 \begin{python}
 class EnsembleVGG:
-    def __init__(self, test_images_vgg):
-        self.test_images_vgg = test_images_vgg
+    def __init__(self, set_vgg):
+        self.set_vgg = set_vgg
 
         # create list of models
         self.model_list = []
 
-        base_dir = './models/'
+        base_dir = '/content/drive/MyDrive/Fazzari_Ramo/Models/'
         # VGG16
         for name in vgg16:
             tmp = ks.models.load_model(base_dir + 'vgg16/' + name)
@@ -35,7 +37,7 @@ class EnsembleVGG:
             for i, layer in enumerate(tmp.layers):
                 layer.trainable = False
                 layer._name = 'ensemble_' + str(i + 1) + '_' + layer.name
-            self.model_list.append(tmp)
+            self.model_list.append(ks.models.load_model(base_dir + 'vgg16/' + name))
 
 
     def ensembleModel(self, active_models):
@@ -52,7 +54,7 @@ class EnsembleVGG:
         return ensemble_model
 
     def evaluate(self, ensemble_model):
-        loss, acc = ensemble_model.evaluate(self.test_images_vgg)
+        loss, acc = ensemble_model.evaluate(self.set_vgg)
         return acc
 
     def ensemble_and_evaluate(self, active_models):
@@ -72,8 +74,8 @@ The class related to the ResNet family of networks is as follows:
 
 \begin{python}
 class EnsembleResNet:
-    def __init__(self, test_images_resnet):
-        self.test_images_resnet = test_images_resnet
+    def __init__(self, set_resnet):
+        self.set_resnet = set_resnet
 
         # create list of models
         self.model_list = []
@@ -109,7 +111,7 @@ class EnsembleResNet:
         return ensemble_model
 
     def evaluate(self, ensemble_model):
-        loss, acc = ensemble_model.evaluate(self.test_images_resnet)
+        loss, acc = ensemble_model.evaluate(self.set_resnet)
         return acc
 
     def ensemble_and_evaluate(self, active_models):
@@ -129,8 +131,8 @@ Finally, the ensemble class for Inception is:
 
 \begin{python}
 class EnsembleInception:
-    def __init__(self, test_images_inception):
-        self.test_images_inception = test_images_inception
+    def __init__(self, set_inception):
+        self.set_inception = set_inception
 
         # create list of models
         self.model_list = []
@@ -160,7 +162,7 @@ class EnsembleInception:
         return ensemble_model
 
     def evaluate(self, ensemble_model):
-        loss, acc = ensemble_model.evaluate(self.test_images_inception)
+        loss, acc = ensemble_model.evaluate(self.set_inception)
         return acc
 
     def ensemble_and_evaluate(self, active_models):
@@ -320,7 +322,7 @@ The following graph shows the results obtained for each generation from the popu
 \end{figure}
 
 
-As it can be noticed from the graph the elitism allows the maximum value to never go down. Moreover, it is possible to notice that the maximum result obtained is much higher than the one obtained with VGG16, which reached almost 80\%, instead here we reach 95.86\%. This was obtained from the genetic algorithm by combining the following models together:
+As it can be noticed from the graph the elitism allows the maximum value to never go down. Moreover, it is possible to notice that the maximum result obtained is much higher than the one obtained with VGG16, which reached almost 80\%, instead here we reach 92.23\%. This was obtained from the genetic algorithm by combining the following models together:
  \begin{itemize}
 	\item VGG16 feature extraction
 	\item VGG16 feature extraction with dropout
@@ -328,6 +330,16 @@ As it can be noticed from the graph the elitism allows the maximum value to neve
          \item VGG16 with 1 layer finetuned
 \end{itemize}
 Chosen by the chromosome [0, 0, 1, 1, 1, 1, 0], our winner in the final population.
+
+Looking closely at the graph we can see a very slight growth at the end of the fifth generation, this with later testing turned out to be the global optimum.
+
+Testing the network obtained by choosing the above models with the test set it was possible to obtain an accuracy of 0.9586. Very high and even higher than that obtained on the validation set, this can be related to two reasons:
+
+\begin{enumerate}
+	\item The features of the frameworks in the test set are much more similar to those in the training, possible but not that much;
+	\item The quantity of pictures present in the test set is greater than that of the validation as reported in chapter 1.2, therefore the weight of mistaking a picture in the case of validation has a higher weight in percentage than in the test set.
+\end{enumerate}
+
 
 
 
@@ -341,7 +353,7 @@ The following graph shows the results obtained for each generation from the popu
 	\label{fig:ensembleresnet}
 \end{figure}
 
-The maximum accuracy value for ResNet was obtained in Section 4.2.4 using fine tuning of one block and two additional dense layers at the end of the network, reaching an accuracy score of 0.6736. Also here we exceed the value reached by the single model obtaining a much higher value, reaching 0.8483, satisfactory value even if lower than the one obtained with the ensemble of VGGs. This was obtained from the genetic algorithm by combining the following models together:
+The maximum accuracy value for ResNet was obtained in Section 4.2.4 using fine tuning of one block and two additional dense layers at the end of the network, reaching an accuracy score of 0.6736. Also here we exceed the value reached by the single model obtaining a much higher value, reaching 0.8212, satisfactory value even if lower than the one obtained with the ensemble of VGGs. This was obtained from the genetic algorithm by combining the following models together:
  \begin{itemize}
 	\item ResNet50 with 1 block finetuned 
          \item ResNet50 with 2 blocks finetuned 
@@ -350,6 +362,10 @@ The maximum accuracy value for ResNet was obtained in Section 4.2.4 using fine t
 	\item ResNet101 finetuned till block 4
 \end{itemize}
 Chosen by the chromosome [0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0], our winner in the final population.
+
+Anyway, it is important to notice here that the value for the average forms a mountain scape shape, this is a problem related to the GA hyperparameters and operators, which led to unravel the result obtained by the previous population.
+
+Testing the network obtained by choosing the above models with the test set it was possible to obtain an accuracy of 0.9517. Very high and much higher than that obtained on the validation set, hence we can take into consideration the hypothesis done, related to this behavior, in the previous paragraph.
 
 
 \subsubsection{GA Results for ResNet Inception}
@@ -362,10 +378,13 @@ The following graph shows the results obtained for each generation from the popu
 	\label{fig:ensembleinception}
 \end{figure}
 
-The maximum accuracy value for Inception was obtained in Section 4.4.5 fine tuning 3 blocks and using exponential decay for the learning rate, reaching an accuracy score of 0.5803. Also here we exceed the value reached by the single model obtaining a much higher value, reaching 0.9264, satisfactory value even if lower than the one obtained with the ensemble of VGGs. This was obtained from the genetic algorithm by combining the following models together:
+The maximum accuracy value for Inception was obtained in Section 4.4.5 fine tuning 3 blocks and using exponential decay for the learning rate, reaching an accuracy score of 0.5803. Also here we exceed the value reached by the single model obtaining a much higher value, reaching 0.8938, satisfactory value even if lower than the one obtained with the ensemble of VGGs. This was obtained from the genetic algorithm by combining the following models together:
  \begin{itemize}
 	\item Inception with 1 block finetuned
 	\item Inception with 3 blocks finetuned
 \end{itemize}
 Chosen by the chromosome [0, 1, 0, 1, 0], our winner in the final population.
+
+Testing the network obtained by choosing the above models with the test set it was possible to obtain an accuracy of 0.9264 and a loss equal to 0.3 (in the other ensembles it was really close to 0 that the evaluation function of keras printed directly 0). Very high and much higher than that obtained on the validation set, hence we can take into consideration the hypothesis done, related to this behavior, in the previous paragraph.
+
 
