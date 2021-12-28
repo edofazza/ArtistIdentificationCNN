@@ -38,7 +38,7 @@ The original VGG16 comes with a couple of 4096 FC layers followed by 1000 softma
 \hline
 \textbf{Epoch stopped} & \textbf{Validation Accuracy} & \textbf{Testing Accuracy} & \textbf{Validation Loss} & \textbf{Testing Loss} \\
 \hline
-12 & 0.7409 & 0.7057 & 5.1959 & 5.7\\
+12 & 0.7409 & 0.6391 & 5.1959 & 5.7002\\
 \hline
 \end{tabular}
 
@@ -99,7 +99,7 @@ We have two possible positions to use the dropout layer in our network and they 
 	\end{subfigure}
 \end{figure}
 
-\noindent As expected, dropout mitigated the magnitude of overfitting, however our network perform slightly worst on accuracy (now the validation one is 0.73, before was 0.74) than without the dropout layer, but shown quite good improvement in the loss value.
+\noindent As expected, dropout mitigated the magnitude of overfitting, however our network perform slightly worst on accuracy (now the validation one is 0.73, before was 0.74) than without the dropout layer, but shown quite good improvement in the loss value and the test accuracy.
 
 
 \subsubsection{Test 3: Finetuning One Convolutional Layer}
@@ -173,7 +173,7 @@ To overcome the previous problems, the overfitting and the strange shape behavio
 \end{figure}
 
 
-\noindent Adding dropout and a different optimizer with a little learning rate, we finally obtained what we were aiming, with results now comparable with the ones on test 4.1.1, but now we our using a more complex network.
+\noindent Adding dropout and a different optimizer with a little learning rate, we finally obtained what we were aiming, with results slightly better than ones on test 4.1.1, but now we our using a more complex network.
 
 However we can still do something, the training accuracy increases very rapidly even if dropout is applied. To decrease this effect in test 6 we use weight regularization techniques.
 
@@ -210,7 +210,7 @@ This test is basically test 4, but finetuning the last two convolutional layers 
 \end{figure}
 
 
-Following the approach used in the previous test we obtained also here more smoothed graphs, but the performance is little lower than before. The problem here is that we are propagating to the second layer in block 5 gradients that are not really improvements of the ones set by the \textit{imagenet} default configuration.
+Following the approach used in the previous test we obtained also here more smoothed graphs, but the performance is little lower than before (especially on loss values). The problem here is that we are propagating to the second layer in block 5 gradients that are not really improvements of the ones set by the \textit{imagenet} default configuration.
 
 
 
@@ -248,7 +248,7 @@ In this paragraph we exploited the conclusion mentioned in test 4, introducing h
 	\end{subfigure}
 \end{figure}
 
-The shapes of the graphs are more or less the same of the two had in test 4, the only things that changes are the values of the losses which are here higher and more curvilinear due to the weight regularization approach used. Anyway, this heavy regularization helped us to surpass the result in test 1, not by much but it is an improvement that, maybe, can be exploited finetuning more. The model could potentially been trained more, restoring then best weights in case of no improvements, but due to Colab limitations it was impossible to go further. Following this lead, in the next paragraph we use weight regularization with two convolutional layers finetuned.
+The shapes of the graphs are more or less the same of the two had in test 4, the only things that changes are the values of the losses which are here higher and more curvilinear due to the weight regularization approach used. Anyway, this heavy regularization helped us to surpass the result in previous tests , not by much but it is an improvement that, maybe, can be exploited finetuning more. The model could potentially been trained more, restoring then best weights in case of no improvements, but due to Colab limitations it was impossible to go further. Following this lead, in the next paragraph we use weight regularization with two convolutional layers finetuned.
 
 
 
