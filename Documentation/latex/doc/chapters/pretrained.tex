@@ -60,6 +60,9 @@ The original VGG16 comes with a couple of 4096 FC layers followed by 1000 softma
 	\end{subfigure}
 \end{figure}
 
+As a first result it is quite satisfactory even if the loss value is high. This value of validation for simple feature extraction may suggest that the smallness of the network VGG16 allows to be quite general to the problem of classification, allowing to extend its use to our problem even if our images are different from those present on \textit{imagenet}. On the other hand there is to consider the use of the two dense that allow to better adapt the final result to our purpose, so the features identified by VGG16 are processed to become more specific to our problem.
+
+
 \subsubsection{Test 2: Adding Dropout to Test 1}
 We have two possible positions to use the dropout layer in our network and they are after each 256-dense layer, but we decided to use just one layer at the end of the second 256-Dense layer (\textit{my\_dense1}) as shown in Figure\ref{fig:vgg16fe2}. We didn't use a dropout layer between the two 256-dense layers, since this type of architecture led to worst performance, this mainly because we would have less units to fully train our topic-specific network.
 \begin{figure}[H]
@@ -718,7 +721,7 @@ The introduction of these layers worsen the performance of test 4, but they help
 
 
 \subsubsection{Test 7: Going Deeper and Deeper}
-Since increasing the finetuning level led to better result in the previous tests, we finetuned ResNet101 till \textit{conv3\_block4\_out} including the parameters of all conv4 (i.e., block4). The network in this way is really unbalanced in terms of trainable parameters, most of them were trainable (i.e., about 80\%). Even that, we tested it and what we obtain was a failure, the network didn't learn well an ended up with a tremendous low accuracy. Thus, we decided to limit our going deeper to the \textit{conv4\_block10\_out}: adding three more sub-blocks to the ones tested in test 3 (which is still our current optimum).
+Since increasing the finetuning level led to better result in the previous tests, we finetuned ResNet101 till \textit{conv3\_block4\_out} including the parameters of all conv4 (i.e., block4). The network in this way is really unbalanced in terms of trainable parameters, most of them were trainable (i.e., about 80\%). Even that, we tested it and what we obtain was a failure, the network didn't learn well an ended up with a tremendous low accuracy. Thus, we decided to limit our going deeper to the \textit{conv4\_block10\_out}: adding three more sub-blocks to the ones tested in test 4 (which is still our current optimum).
 \noindent The result obtained are the following:
 
 \medskip
